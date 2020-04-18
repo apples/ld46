@@ -35,9 +35,13 @@ void register_type<ember_database>(sol::table& lua) {
         "remove_component", [](ember_database& db, ember_database::ent_id eid, sol::table com_type){
             return com_type["_remove_component"](db, eid);
         },
-        "get_component", [](ember_database& db, ember_database::ent_id eid, sol::table com_type, sol::this_state s){
+        "get_component", [](ember_database& db, ember_database::ent_id eid, sol::table com_type, sol::this_state s) -> sol::object {
             auto lua = sol::state_view{s};
             const auto& dispatch = get_dispatch(com_type);
+
+            if (!dispatch.get_component) {
+                return sol::nil;
+            }
 
             return dispatch.get_component(db, eid, lua);
         },

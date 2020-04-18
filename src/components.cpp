@@ -16,6 +16,10 @@ void register_all_components(sol::table& table) {
         table.set_usertype("rowcol", usertype);
     }
 
+    register_type<tag_heart>(table);
+    register_type<tag_block>(table);
+    register_type<tag_cell>(table);
+    register_type<tag_virus>(table);
     register_type<net_id>(table);
     register_type<position>(table);
     register_type<velocity>(table);

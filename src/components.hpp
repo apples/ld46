@@ -37,6 +37,11 @@ using json_serializers::basic::to_json;
 
 void register_all_components(sol::table& table);
 
+TAG(tag_heart);
+TAG(tag_block);
+TAG(tag_cell);
+TAG(tag_virus);
+
 struct net_id {
     ember_database::net_id id;
 };

@@ -81,23 +81,30 @@ template <typename T>
 void register_usertype(scripting::token<T>, sol::simple_usertype<T>& usertype) {
     using namespace _detail;
 
+    static auto dispatch = dispatch_t{};
+
     if constexpr (is_tag<T>::value) {
         usertype.set("new", sol::constructors<T()>{});
         usertype.set("_visit", &_detail::visit_tag<T>);
+
+        dispatch = dispatch_t{
+            &_detail::has_component<T>,
+            nullptr,
+        };
     } else {
         usertype.set("new", sol::constructors<T(), T(const T&)>{});
         usertype.set("_get_component", &_detail::get_component<T>);
         usertype.set("_visit", &_detail::visit<T>);
+
+        dispatch = dispatch_t{
+            &_detail::has_component<T>,
+            &_detail::get_component_obj<T>,
+        };
     }
 
     usertype.set("_add_component", &_detail::add_component<T>);
     usertype.set("_remove_component", &_detail::remove_component<T>);
     usertype.set("_has_component", &_detail::has_component<T>);
-
-    static auto dispatch = dispatch_t{
-        &_detail::has_component<T>,
-        &_detail::get_component_obj<T>,
-    };
 
     usertype.set("_dispatch", sol::make_light(dispatch));
 }
