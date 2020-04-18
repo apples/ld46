@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title>Zen Fish</title>
+  </head>
+  <body>
+    <div id="loading-screen" class="loading-screen">
+      <div id="spinner" class="lds-heart"><div></div></div>
+      <div id="status" class="emscripten"></div>
+    </div>
+    <div id="canvas-wrapper" class="canvas-wrapper">
+      <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+    <script type="text/javascript" src="scripts/shell.js"></script>
+    <script type="text/javascript" src="scripts/config.js"></script>
+    <script type="text/javascript" src="game.data.js"></script>
+    <script async type="text/javascript" src="game.js"></script>
+  </body>
+</html>
