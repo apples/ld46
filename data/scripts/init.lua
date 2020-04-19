@@ -27,12 +27,39 @@ SPRITE_VIRUS_B = mkspr_frames(7)
 SPRITE_VIRUS_C = mkspr_frames(8)
 
 game_state = {
-    board = {
-        [-1] = {                  [0] = TILE_CAP                   },
-        [0]  = { [-1] = TILE_CAP, [0] = TILE_CROSS, [1] = TILE_CAP },
-        [1]  = {                  [0] = TILE_CAP                   },
-    }
+    board = {}
 }
+
+function make_tile(x, y, t)
+    local ent = engine.entities:create_entity()
+
+    local position = component.position.new()
+    position.pos.x = x
+    position.pos.y = y
+
+    local sprite = component.sprite.new()
+    sprite.frames = { component.rowcol.new(0, t) }
+    sprite.speed = 3
+    sprite.bounce = true
+
+    engine.entities:add_component(ent, position)
+    engine.entities:add_component(ent, sprite)
+
+    if not game_state.board[x] then
+        game_state.board[x] = {}
+    end
+
+    game_state.board[x][y] = {
+        type = t,
+        ent = ent,
+    }
+end
+
+make_tile(0, 0, TILE_CROSS)
+make_tile(-1, 0, TILE_CAP)
+make_tile(1, 0, TILE_CAP)
+make_tile(0, -1, TILE_CAP)
+make_tile(0, 1, TILE_CAP)
 
 gui_state = {
     fps = 0,

@@ -8,6 +8,7 @@ return function(init)
     local position = component.position.new()
     position.pos.x = init.x or 0
     position.pos.y = init.y or 0
+    position.z = 1
 
     local sprite = component.sprite.new()
     sprite.frames = SPRITE_HEART
