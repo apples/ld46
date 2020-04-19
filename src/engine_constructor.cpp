@@ -1,5 +1,7 @@
 #include "engine.hpp"
 
+#include "pathfind.hpp"
+
 #include "emberjs/config.hpp"
 
 using namespace std::literals;
@@ -57,6 +59,8 @@ engine::engine() {
 
     lua["trace_push"] = +[](const std::string& name){ tracing::push(name).discard(); };
     lua["trace_pop"] = +[](const std::string& name){ tracing::pop(name); };
+
+    lua["pathfind_fast"] = pathfind;
 
     display_width = config["display"]["width"];
     display_height = config["display"]["height"];

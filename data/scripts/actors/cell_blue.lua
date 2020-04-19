@@ -1,8 +1,14 @@
 local engine = require('engine')
 
+function verbose(s)
+    print(s)
+end
+
 local cell_blue = {}
 
 function cell_blue.update(eid, dt)
+    verbose('cell_blue')
+
     local position = engine.entities:get_component(eid, component.position)
     local script = engine.entities:get_component(eid, component.script)
     local state = script.state
@@ -11,12 +17,13 @@ function cell_blue.update(eid, dt)
     local tile_y = math.floor(position.pos.y + 0.5)
 
     local function find_new_target()
+        verbose('  find_new_target()')
         state.path = nil
 
         local best_score = nil
         local potential_targets = {}
 
-        traverse_breadth_first(function (where, tile)
+        traverse_breadth_first({ x = tile_x, y = tile_y }, function (where, tile)
             if tile.type == TILE_CAP then
                 local score = math.abs(where.x - tile_x) + math.abs(where.y - tile_y)
                 if best_score == nil or score < best_score then
@@ -33,28 +40,35 @@ function cell_blue.update(eid, dt)
         if #potential_targets > 0 then
             local roll = math.random(#potential_targets)
             state.target = potential_targets[roll]
+            verbose('  target found (x = ' .. state.target.x .. ', y = ' .. state.target.y .. ')')
         end
     end
 
     if not state.target then
+        verbose('no target, searching')
         find_new_target()
     else
+        verbose('has target, checking for cap')
         local target_tile = get_tile(state.target.x, state.target.y)
         if not target_tile or target_tile.type ~= TILE_CAP then
+            verbose('no cap, searching for new target')
             find_new_target()
         end
     end
 
     if state.target then
-        if not state.path or state.path.version ~= game_state.board_version then
+        verbose('has target')
+        if not state.path or state.version ~= game_state.board_version then
+            verbose('needs new path')
             local path = pathfind({ x = tile_x, y = tile_y }, state.target)
 
             if path then
-                state.path = {
-                    path = path,
-                    version = game_state.board_version
-                }
+                verbose('path found (len = ' .. #path .. ')')
+                state.path = path
+                state.path_i = 1
+                state.version = game_state.board_version
             else
+                verbose('path not found')
                 state.target = nil
                 state.path = nil
             end
@@ -62,7 +76,8 @@ function cell_blue.update(eid, dt)
     end
 
     if state.path then
-        local dest = state.path.path
+        verbose('has path, moving (path_i = ' .. state.path_i .. ', len = ' .. #state.path .. ')')
+        local dest = state.path[state.path_i]
         local dx = dest.x - position.pos.x
         local dy = dest.y - position.pos.y
         local adx = math.abs(dx)
@@ -77,9 +92,10 @@ function cell_blue.update(eid, dt)
         end
 
         if adx < 1/16 and ady < 1/16 then
-            local next = state.path.path.next
-            if next then
-                state.path.path = next
+            verbose('path step reached, advancing')
+            local next = state.path_i + 1
+            if next <= #state.path then
+                state.path_i = next
             end
         end
     end
@@ -87,10 +103,13 @@ function cell_blue.update(eid, dt)
     local cur_tile = get_tile(tile_x, tile_y)
 
     if cur_tile and cur_tile.type == TILE_CAP then
+        verbose('on cap, working')
         state.timer = (state.timer or 0) + dt
         if state.timer >= 1 then
+            verbose('cap proc')
             local high_priority = {}
             local low_priority = {}
+            local last_resort = {}
 
             local N = get_tile_type(tile_x, tile_y + 1)
             local S = get_tile_type(tile_x, tile_y - 1)
@@ -113,6 +132,8 @@ function cell_blue.update(eid, dt)
                 elseif W_connected then
                     low_priority[#low_priority + 1] = TILE_NW
                 end
+                last_resort[#low_priority + 1] = TILE_NE
+                last_resort[#low_priority + 1] = TILE_NW
             end
 
             if S_connected then
@@ -126,6 +147,8 @@ function cell_blue.update(eid, dt)
                 elseif W_connected then
                     low_priority[#low_priority + 1] = TILE_SW
                 end
+                last_resort[#low_priority + 1] = TILE_SE
+                last_resort[#low_priority + 1] = TILE_SW
             end
 
             if E_connected then
@@ -139,6 +162,8 @@ function cell_blue.update(eid, dt)
                 elseif S_connected then
                     low_priority[#low_priority + 1] = TILE_SE
                 end
+                last_resort[#low_priority + 1] = TILE_NE
+                last_resort[#low_priority + 1] = TILE_SE
             end
 
             if W_connected then
@@ -152,6 +177,8 @@ function cell_blue.update(eid, dt)
                 elseif S_connected then
                     low_priority[#low_priority + 1] = TILE_SW
                 end
+                last_resort[#low_priority + 1] = TILE_NW
+                last_resort[#low_priority + 1] = TILE_SW
             end
 
             local decision = nil
@@ -162,53 +189,60 @@ function cell_blue.update(eid, dt)
             elseif #low_priority > 0 then
                 local roll = math.random(#low_priority)
                 decision = low_priority[roll]
+            elseif #last_resort > 0 then
+                local roll = math.random(#last_resort)
+                decision = last_resort[roll]
+            else
+                decision = TILE_CROSS
             end
 
-            if decision then
-                set_tile(tile_x, tile_y, decision)
+            set_tile(tile_x, tile_y, decision)
 
-                if decision == TILE_NE then
-                    if not N then
-                        set_tile(tile_x, tile_y + 1, TILE_CAP)
-                    end
-                    if not E then
-                        set_tile(tile_x + 1, tile_y, TILE_CAP)
-                    end
+            if decision == TILE_NE then
+                if not N then
+                    set_tile(tile_x, tile_y + 1, TILE_CAP)
                 end
-
-                if decision == TILE_SE then
-                    if not S then
-                        set_tile(tile_x, tile_y - 1, TILE_CAP)
-                    end
-                    if not E then
-                        set_tile(tile_x + 1, tile_y, TILE_CAP)
-                    end
+                if not E then
+                    set_tile(tile_x + 1, tile_y, TILE_CAP)
                 end
-
-                if decision == TILE_NW then
-                    if not N then
-                        set_tile(tile_x, tile_y + 1, TILE_CAP)
-                    end
-                    if not W then
-                        set_tile(tile_x - 1, tile_y, TILE_CAP)
-                    end
-                end
-
-                if decision == TILE_SW then
-                    if not S then
-                        set_tile(tile_x, tile_y - 1, TILE_CAP)
-                    end
-                    if not W then
-                        set_tile(tile_x - 1, tile_y, TILE_CAP)
-                    end
-                end
-
-                state.timer = 0
             end
+
+            if decision == TILE_SE then
+                if not S then
+                    set_tile(tile_x, tile_y - 1, TILE_CAP)
+                end
+                if not E then
+                    set_tile(tile_x + 1, tile_y, TILE_CAP)
+                end
+            end
+
+            if decision == TILE_NW then
+                if not N then
+                    set_tile(tile_x, tile_y + 1, TILE_CAP)
+                end
+                if not W then
+                    set_tile(tile_x - 1, tile_y, TILE_CAP)
+                end
+            end
+
+            if decision == TILE_SW then
+                if not S then
+                    set_tile(tile_x, tile_y - 1, TILE_CAP)
+                end
+                if not W then
+                    set_tile(tile_x - 1, tile_y, TILE_CAP)
+                end
+            end
+
+            state.timer = 0
         end
     else
         state.timer = 0
     end
+
+    verbose('done.')
+
+    verbose = function () end
 end
 
 function cell_blue.on_click(eid, pos, loc)

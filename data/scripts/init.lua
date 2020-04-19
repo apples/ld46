@@ -87,6 +87,7 @@ function get_tile_type(x, y)
 end
 
 function get_neighbors(tile, allow_caps)
+    trace_push('get_neighbors')
     local results = {}
 
     if tile.type == TILE_SW then
@@ -108,67 +109,13 @@ function get_neighbors(tile, allow_caps)
         results[#results + 1] = { x = 0, y = 1 }
     end
 
+    trace_pop('get_neighbors')
     return results
 end
 
-function get_neighbors2(where, allow_caps)
-    local results = {}
-
-    local type = get_tile_type(where.x, where.y)
-
-    local N = get_tile_type(where.x, where.y + 1)
-    local S = get_tile_type(where.x, where.y - 1)
-    local E = get_tile_type(where.x + 1, where.y)
-    local W = get_tile_type(where.x - 1, where.y)
-
-    local function check_N()
-        if N == TILE_SE or N == TILE_SW or N == TILE_CROSS then
-            results[#results + 1] = { x = where.x, y = where.y + 1 }
-        end
-    end
-
-    local function check_S()
-        if S == TILE_NE or S == TILE_NW or S == TILE_CROSS then
-            results[#results + 1] = { x = where.x, y = where.y - 1 }
-        end
-    end
-
-    local function check_E()
-        if E == TILE_SW or E == TILE_NW or E == TILE_CROSS then
-            results[#results + 1] = { x = where.x + 1, y = where.y }
-        end
-    end
-
-    local function check_W()
-        if W == TILE_SE or W == TILE_NE or W == TILE_CROSS then
-            results[#results + 1] = { x = where.x - 1, y = where.y }
-        end
-    end
-
-    if type == TILE_SW then
-        check_S()
-        check_W()
-    elseif type == TILE_SE then
-        check_S()
-        check_E()
-    elseif type == TILE_NW then
-        check_N()
-        check_W()
-    elseif type == TILE_NE then
-        check_N()
-        check_E()
-    elseif type == TILE_CROSS or allow_caps and type == TILE_CAP then
-        check_N()
-        check_S()
-        check_E()
-        check_W()
-    end
-
-    return results
-end
-
-function traverse_breadth_first(cb)
-    local q = {{ x = 0, y = 0}}
+function traverse_breadth_first(start, cb)
+    trace_push('traverse_breadth_first')
+    local q = {start}
     local visited = {}
 
     local function push(x, y)
@@ -196,50 +143,14 @@ function traverse_breadth_first(cb)
             end
         end
     end
+    trace_pop('traverse_breadth_first')
 end
 
 function pathfind(source, dest)
-    local function get_H(where)
-        return math.abs(source.x - where.x) + math.abs(source.y - where.y)
-    end
-
-    local q = { { x = dest.x, y = dest.y, cost = 0, value = get_H(dest) } }
-    local visited = {}
-
-    local function mark_visited(where)
-        if not visited[where.x] then visited[where.x] = {} end
-        visited[where.x][where.y] = true
-    end
-
-    local function push(next, x, y)
-        local cur = { next = next, x = x, y = y, cost = next.cost + 1 }
-        cur.value = get_H(cur) + cur.cost
-
-        local insert_where = #q + 1
-
-        for i,v in ipairs(q) do
-            if v.value <= cur.value then
-                insert_where = i
-                break
-            end
-        end
-
-        table.insert(q, insert_where, cur)
-    end
-
-    while #q > 0 do
-        local next = table.remove(q)
-
-        if next.x == source.x and next.y == source.y then
-            return next
-        end
-
-        mark_visited(next)
-
-        for _,v in ipairs(get_neighbors2(next, true)) do
-            push(next, v.x, v.y)
-        end
-    end
+    trace_push('pathfind')
+    local r = pathfind_fast(game_state.board, source, dest)
+    trace_pop('pathfind')
+    return #r > 0 and r or nil
 end
 
 set_tile(0, 0, TILE_CROSS)
