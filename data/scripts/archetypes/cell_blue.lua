@@ -12,7 +12,7 @@ return function(init)
 
     local sprite = component.sprite.new()
     sprite.frames = SPRITE_CELL_BLUE
-    sprite.speed = 3
+    sprite.speed = 4
     sprite.bounce = true
 
     local script = component.script.new()

@@ -3,7 +3,7 @@ local heart = require('archetypes.heart')
 
 local function mkspr_frames(r)
     local f = component.rowcol.new
-    return { f(r, 0), f(r, 1) }
+    return { f(r, 0), f(r, 1), f(r, 2) }
 end
 
 config = {
