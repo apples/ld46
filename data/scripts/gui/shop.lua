@@ -1,5 +1,6 @@
 local vdom = require('vdom')
 local spawn_blue = require('archetypes.cell_blue')
+local spawn_green = require('archetypes.cell_green')
 
 return function(props)
     local context = vdom.useContext()
@@ -10,6 +11,11 @@ return function(props)
 
     local buy_blue = vdom.useCallback(function ()
         spawn_blue()
+        close()
+    end, { close })
+
+    local buy_green = vdom.useCallback(function ()
+        spawn_green()
         close()
     end, { close })
 
@@ -24,6 +30,14 @@ return function(props)
                 left=8,
                 bottom=-8,
                 on_click=buy_blue,
+            }),
+            vdom.create_element('panel', {
+                texture='shop_pane_green',
+                width=16,
+                height=16,
+                left=8-32,
+                bottom=-8,
+                on_click=buy_green,
             })
         )
     )

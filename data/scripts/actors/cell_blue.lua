@@ -1,6 +1,6 @@
 local engine = require('engine')
 
-function verbose(s)
+local function verbose(s)
     print(s)
 end
 
@@ -32,7 +32,6 @@ function cell_blue.update(eid, dt)
                 elseif score == best_score then
                     potential_targets[#potential_targets + 1] = where
                 end
-                return false
             end
             return true
         end)

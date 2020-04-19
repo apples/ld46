@@ -5,6 +5,8 @@ local function mkspr_frames(r)
     return function (sprite)
         local f = component.rowcol.new
         sprite.frames:add(f(r, 0))
+        sprite.frames:add(f(r, 1))
+        sprite.frames:add(f(r, 2))
     end
 end
 
