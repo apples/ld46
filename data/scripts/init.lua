@@ -2,8 +2,10 @@ local engine = require('engine')
 local heart = require('archetypes.heart')
 
 local function mkspr_frames(r)
-    local f = component.rowcol.new
-    return { f(r, 0), f(r, 1), f(r, 2) }
+    return function (sprite)
+        local f = component.rowcol.new
+        sprite.frames:add(f(r, 0))
+    end
 end
 
 config = {
@@ -38,7 +40,8 @@ function set_tile(x, y, t)
         local ent = existing_tile.ent
 
         local sprite = engine.entities:get_component(ent, component.sprite)
-        sprite.frames = { component.rowcol.new(0, t) }
+        sprite.frames:clear()
+        sprite.frames:add(component.rowcol.new(0, t))
 
         existing_tile.type = t
     else
@@ -49,7 +52,7 @@ function set_tile(x, y, t)
         position.pos.y = y
 
         local sprite = component.sprite.new()
-        sprite.frames = { component.rowcol.new(0, t) }
+        sprite.frames:add(component.rowcol.new(0, t))
         sprite.speed = 3
         sprite.bounce = true
 
@@ -108,6 +111,62 @@ function get_neighbors(tile, allow_caps)
     return results
 end
 
+function get_neighbors2(where, allow_caps)
+    local results = {}
+
+    local type = get_tile_type(where.x, where.y)
+
+    local N = get_tile_type(where.x, where.y + 1)
+    local S = get_tile_type(where.x, where.y - 1)
+    local E = get_tile_type(where.x + 1, where.y)
+    local W = get_tile_type(where.x - 1, where.y)
+
+    local function check_N()
+        if N == TILE_SE or N == TILE_SW or N == TILE_CROSS then
+            results[#results + 1] = { x = where.x, y = where.y + 1 }
+        end
+    end
+
+    local function check_S()
+        if S == TILE_NE or S == TILE_NW or S == TILE_CROSS then
+            results[#results + 1] = { x = where.x, y = where.y - 1 }
+        end
+    end
+
+    local function check_E()
+        if E == TILE_SW or E == TILE_NW or E == TILE_CROSS then
+            results[#results + 1] = { x = where.x + 1, y = where.y }
+        end
+    end
+
+    local function check_W()
+        if W == TILE_SE or W == TILE_NE or W == TILE_CROSS then
+            results[#results + 1] = { x = where.x - 1, y = where.y }
+        end
+    end
+
+    if type == TILE_SW then
+        check_S()
+        check_W()
+    elseif type == TILE_SE then
+        check_S()
+        check_E()
+    elseif type == TILE_NW then
+        check_N()
+        check_W()
+    elseif type == TILE_NE then
+        check_N()
+        check_E()
+    elseif type == TILE_CROSS or allow_caps and type == TILE_CAP then
+        check_N()
+        check_S()
+        check_E()
+        check_W()
+    end
+
+    return results
+end
+
 function traverse_breadth_first(cb)
     local q = {{ x = 0, y = 0}}
     local visited = {}
@@ -153,8 +212,6 @@ function pathfind(source, dest)
     end
 
     local function push(next, x, y)
-        local tile = get_tile(x, y)
-        if tile and tile.type == TILE_CAP then return end
         local cur = { next = next, x = x, y = y, cost = next.cost + 1 }
         cur.value = get_H(cur) + cur.cost
 
@@ -179,10 +236,8 @@ function pathfind(source, dest)
 
         mark_visited(next)
 
-        local tile = get_tile(next.x, next.y)
-
-        for _,v in ipairs(get_neighbors(tile, true)) do
-            push(next, next.x + v.x, next.y + v.y)
+        for _,v in ipairs(get_neighbors2(next, true)) do
+            push(next, v.x, v.y)
         end
     end
 end

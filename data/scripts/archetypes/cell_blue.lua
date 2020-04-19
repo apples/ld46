@@ -11,7 +11,7 @@ return function(init)
     position.z = 2
 
     local sprite = component.sprite.new()
-    sprite.frames = SPRITE_CELL_BLUE
+    SPRITE_CELL_BLUE(sprite)
     sprite.speed = 4
     sprite.bounce = true
 

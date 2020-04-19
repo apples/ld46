@@ -68,12 +68,11 @@ if(EMSCRIPTEN)
         " -s TOTAL_MEMORY=134217728"
         " -s DISABLE_EXCEPTION_CATCHING=0"
         " -s FORCE_FILESYSTEM=1"
+        " -s ASSERTIONS=1"
         " -s EXTRA_EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]"
         "${EMSCRIPTEN_PORTS_FLAGS}")
     string(CONCAT GAME_LINK_FLAGS_DEBUG
         " -g4"
-        " --cpuprofiler"
-        " --memoryprofiler"
         " -s ASSERTIONS=1"
         " -s DEMANGLE_SUPPORT=1")
     set_target_properties(game PROPERTIES
