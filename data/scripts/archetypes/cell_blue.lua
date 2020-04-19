@@ -17,6 +17,7 @@ return function(init)
 
     local script = component.script.new()
     script.name = 'cell_blue'
+    script.state = {}
 
     engine.entities:add_component(ent, component.tag_heart.new())
     engine.entities:add_component(ent, position)
