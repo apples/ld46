@@ -234,7 +234,8 @@ function cell_blue.update(eid, dt)
                 end
             end
 
-            state.timer = 0
+            verbose('my purpose has been fulfilled')
+            engine.entities:destroy_entity(eid)
         end
     else
         state.timer = 0
