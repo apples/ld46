@@ -294,11 +294,11 @@ std::vector<widget*> get_descendent_stack(const widget& root, const glm::vec2& p
 
             if (position.x >= left && position.x < right && position.y >= bottom && position.y < top) {
                 result.push_back(child.get());
-
-                auto child_stack = get_descendent_stack(*child, position);
-
-                result.insert(end(result), begin(child_stack), end(child_stack));
             }
+
+            auto child_stack = get_descendent_stack(*child, position);
+
+            result.insert(end(result), begin(child_stack), end(child_stack));
         }
     }
 

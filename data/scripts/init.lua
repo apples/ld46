@@ -27,6 +27,7 @@ SPRITE_VIRUS_B = mkspr_frames(7)
 SPRITE_VIRUS_C = mkspr_frames(8)
 
 game_state = {
+    board_version = 1,
     board = {}
 }
 
