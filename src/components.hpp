@@ -67,7 +67,7 @@ REGISTER(velocity,
 
 struct script {
     std::string name;
-    int next_tick;
+    int next_tick = 0;
     sol::table state;
 };
 

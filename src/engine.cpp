@@ -21,6 +21,50 @@ auto engine::handle_game_input(const SDL_Event& event) -> bool {
             }
             break;
         }
+        case SDL_MOUSEBUTTONDOWN: {
+            switch (event.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    const auto where = glm::vec2{
+                        event.button.x / float(display_width / 2) - 1.f,
+                        1.f - event.button.y / float(display_height / 2)};
+                    const auto screen = glm::vec2{display_width, display_height};
+                    const auto scrsz = glm::vec2{25.f / 2.f, 18.75f / 2.f};
+                    const auto proj = glm::ortho(-scrsz.x, scrsz.x, -scrsz.y - .75f, scrsz.y - .75f, -5.f, 5.f);
+                    const auto view = glm::mat4(1.f);
+                    const auto mpos = glm::vec3(glm::inverse(proj * view) * glm::vec4(where.x, where.y, 1.0, 1.0));
+                    const auto forward = -glm::vec3(glm::row(view, 2));
+
+                    float distance;
+                    glm::intersectRayPlane(mpos, forward, glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), distance);
+
+                    const auto intersection = mpos + forward * distance;
+
+                    entities.visit([&](ember_database::ent_id eid,
+                                       const component::position& position,
+                                       const component::script& script) {
+                        if (entities.has_component<component::tag_heart>(eid)) {
+                            const auto d = glm::length(position.pos - glm::vec2(intersection));
+
+                            if (d < 0.5) {
+                                auto module_name = "actors." + script.name;
+                                auto file_name = "data/scripts/actors/" + script.name + ".lua";
+                                sol::table actor = lua.require_file(module_name, file_name);
+                                sol::protected_function on_click = actor["on_click"];
+                                if (on_click.valid()) {
+                                    auto result = on_click(eid, intersection);
+                                    if (!result.valid()) {
+                                        sol::error err = result;
+                                        std::cerr << "engine::handle_game_input: SDL_MOUSEBUTTONDOWN: " << err.what()
+                                                  << std::endl;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            break;
+        }
         case SDL_QUIT:
             std::cout << "Goodbye!" << std::endl;
             return true;

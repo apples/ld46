@@ -15,9 +15,13 @@ return function(init)
     sprite.speed = 3
     sprite.bounce = true
 
+    local script = component.script.new()
+    script.name = 'heart'
+
     engine.entities:add_component(ent, component.tag_heart.new())
     engine.entities:add_component(ent, position)
     engine.entities:add_component(ent, sprite)
+    engine.entities:add_component(ent, script)
 
     return ent
 end
