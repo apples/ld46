@@ -145,15 +145,15 @@ engine::engine() {
     lua["play_bgm"] = play_bgm;
 
     renderer = sushi_renderer(
-        {display_width, display_height},
+        {display_width / 2, display_height / 2},
         program_basic,
         program_msdf,
         font_cache,
         texture_cache);
 
     root_widget = std::make_shared<gui::widget>(renderer);
-    root_widget->set_attribute("width", std::to_string(display_width));
-    root_widget->set_attribute("height", std::to_string(display_height));
+    root_widget->set_attribute("width", std::to_string(display_width/2));
+    root_widget->set_attribute("height", std::to_string(display_height/2));
 
     lua["root_widget"] = root_widget;
     lua["focus_widget"] = [this](gui::widget* widget) {

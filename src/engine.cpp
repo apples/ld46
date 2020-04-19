@@ -29,7 +29,7 @@ auto engine::handle_game_input(const SDL_Event& event) -> bool {
                         1.f - event.button.y / float(display_height / 2)};
                     const auto screen = glm::vec2{display_width, display_height};
                     const auto scrsz = glm::vec2{25.f / 2.f, 18.75f / 2.f};
-                    const auto proj = glm::ortho(-scrsz.x, scrsz.x, -scrsz.y - .75f, scrsz.y - .75f, -5.f, 5.f);
+                    const auto proj = glm::ortho(-scrsz.x, scrsz.x, -scrsz.y, scrsz.y, -5.f, 5.f);
                     const auto view = glm::mat4(1.f);
                     const auto mpos = glm::vec3(glm::inverse(proj * view) * glm::vec4(where.x, where.y, 1.0, 1.0));
                     const auto forward = -glm::vec3(glm::row(view, 2));
@@ -51,7 +51,7 @@ auto engine::handle_game_input(const SDL_Event& event) -> bool {
                                 sol::table actor = lua.require_file(module_name, file_name);
                                 sol::protected_function on_click = actor["on_click"];
                                 if (on_click.valid()) {
-                                    auto result = on_click(eid, intersection);
+                                    auto result = on_click(eid, position, intersection);
                                     if (!result.valid()) {
                                         sol::error err = result;
                                         std::cerr << "engine::handle_game_input: SDL_MOUSEBUTTONDOWN: " << err.what()
@@ -94,7 +94,7 @@ auto engine::handle_gui_input(SDL_Event& e) -> bool {
         case SDL_MOUSEBUTTONDOWN: {
             switch (e.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    auto abs_click_pos = glm::vec2{e.button.x, display_height - e.button.y + 1};
+                    auto abs_click_pos = glm::vec2{e.button.x/2, (display_height - e.button.y + 1)/2};
                     auto widget_stack = get_descendent_stack(*root_widget, abs_click_pos);
                     while (!widget_stack.empty()) {
                         auto cur_widget = widget_stack.back();
@@ -255,7 +255,7 @@ void engine::tick() {
         const auto scrw = 25.f / 2.f;
         const auto scrh = 18.75f / 2.f;
 
-        auto proj = glm::ortho(-scrw, scrw, -scrh - .75f, scrh - .75f, -5.f, 5.f);
+        auto proj = glm::ortho(-scrw, scrw, -scrh, scrh, -5.f, 5.f);
 
         program_basic.bind();
         program_basic.set_cam_forward({0.0, 0.0, -1.0});

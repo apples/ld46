@@ -65,7 +65,8 @@ gui_state = {
     fps = 0,
     debug_strings = {},
     debug_vals = {},
-    game_state = game_state
+    game_state = game_state,
+    shop_target = nil
 }
 
 heart()

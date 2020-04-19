@@ -7,7 +7,7 @@ return function(props)
 
     local color, setColor = vdom.useState(1)
 
-    local size, setSize = vdom.useState(8)
+    local size, setSize = vdom.useState(4)
 
     local onClick = vdom.useCallback(
         function ()
