@@ -105,6 +105,8 @@ function virus_c.update(eid, dt)
                 if not engine.entities:has_component(state.target, component.tag_cell_white) then
                     spawn_virus_c({ x = target_pos.pos.x, y = target_pos.pos.y })
                     engine.entities:destroy_entity(state.target)
+                    play_sfx('virus')
+
                     return
                 else
                     if state.rps_timer <= 0 then

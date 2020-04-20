@@ -16,7 +16,18 @@ function bubble_spawner.update(eid, dt)
 
     state.timer = state.timer + dt
 
-    local rate = math.pow(1/512, math.sin(state.timer) * 0.5 + 1)
+
+    local pow = math.sin(state.timer) * 0.5 + 1;
+    local rate = math.pow(1/512, pow)
+
+    if not state.sfx and pow < 1 then
+        play_sfx('breathe')
+        state.sfx = true
+    end
+
+    if pow > 1 then
+        state.sfx = false
+    end
 
     local spawnloc = spawner(rate, function (where, tile)
         if tile.type == TILE_NE or tile.type == TILE_SE or tile.type == TILE_NW or tile.type == TILE_SW then

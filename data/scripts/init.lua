@@ -198,9 +198,11 @@ gui_state = {
 }
 
 heart()
---bubble_spawner()
---virus_a_spawner()
---virus_b_spawner()
+bubble_spawner()
+virus_a_spawner()
+virus_b_spawner()
 virus_c_spawner()
+
+play_bgm('beat')
 
 print('init done')

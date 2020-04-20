@@ -18,7 +18,7 @@ return function(init)
     local script = component.script.new()
     script.name = 'rps_card'
     script.state = {
-        timer = 0.5
+        timer = 0.9
     }
 
     engine.entities:add_component(ent, position)
