@@ -3,6 +3,7 @@ local heart = require('archetypes.heart')
 local bubble_spawner = require('archetypes.bubble_spawner')
 local cell_blue = require('archetypes.cell_blue')
 local cell_green = require('archetypes.cell_green')
+local cell_white = require('archetypes.cell_white')
 local virus_a_spawner = require('archetypes.virus_a_spawner')
 local virus_b_spawner = require('archetypes.virus_b_spawner')
 
@@ -48,6 +49,10 @@ end
 
 function buy_green()
     cell_green()
+end
+
+function buy_white()
+    cell_white()
 end
 
 function set_tile(x, y, t)
@@ -192,8 +197,8 @@ gui_state = {
 }
 
 heart()
-bubble_spawner()
+--bubble_spawner()
 virus_a_spawner()
-virus_b_spawner()
+--virus_b_spawner()
 
 print('init done')

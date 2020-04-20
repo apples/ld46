@@ -6,8 +6,16 @@
 #include <algorithm>
 #include <iostream>
 
-void ember_database::on_destroy_entity(std::function<void(net_id id)> func) {
+void ember_database::on_destroy_entity(std::function<void(ent_id id)> func) {
     destroy_entity_callback = std::move(func);
+}
+
+void ember_database::destroy_entity(ent_id eid) {
+    if (destroy_entity_callback) {
+        destroy_entity_callback(eid);
+    }
+
+    database::destroy_entity(eid);
 }
 
 namespace scripting {
@@ -66,6 +74,7 @@ void register_type<ember_database>(sol::table& lua) {
                 auto result = func(std::move(eid));
                 if (!result.valid()) {
                     sol::error error = result;
+                    std::cerr << "ember_database.visit(): " << error.what() << "\n";
                     throw std::runtime_error(std::string("ember_database.visit(): ") + error.what());
                 }
             });

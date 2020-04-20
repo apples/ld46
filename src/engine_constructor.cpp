@@ -213,6 +213,27 @@ engine::engine() {
     enable_tracing = false;
 
     next_renderer_gc = clock::duration{0};
+
+    entities.on_destroy_entity([this](ember_database::ent_id eid) {
+        if (entities.has_component<component::death_notifier>(eid)) {
+            const auto& dn = entities.get_component<component::death_notifier>(eid);
+
+            for (const auto& e : dn.ents) {
+                if (entities.has_component<component::script>(e)) {
+                    const auto& script = entities.get_component<component::script>(e);
+                    sol::table s = lua.require_file("actors."+script.name, "data/scripts/actors/"+script.name+".lua");
+                    auto death_notice = s["death_notice"];
+                    if (death_notice.valid()) {
+                        auto result = death_notice(e, eid);
+                        if (!result.valid()) {
+                            sol::error err = result;
+                            std::cerr << "Error: on_destroy_entity: " << err.what() << "\n";
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 engine::~engine() {

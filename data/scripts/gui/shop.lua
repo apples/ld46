@@ -19,6 +19,14 @@ return function(props)
             left=32,
             bottom=0,
             on_click=buy_green,
+        }),
+        vdom.create_element('panel', {
+            texture='shop_pane_white',
+            width=32,
+            height=32,
+            left=64,
+            bottom=0,
+            on_click=buy_white,
         })
     )
 end

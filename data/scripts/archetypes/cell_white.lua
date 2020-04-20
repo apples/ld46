@@ -11,17 +11,14 @@ return function(init)
     position.z = 2
 
     local sprite = component.sprite.new()
-    SPRITE_VIRUS_B(sprite)
-    sprite.speed = 3
+    SPRITE_CELL_WHITE(sprite)
+    sprite.speed = 4
     sprite.bounce = true
 
     local script = component.script.new()
-    script.name = 'virus_b'
-    script.state = {
-        timer = 0
-    }
+    script.name = 'cell_white'
+    script.state = {}
 
-    engine.entities:add_component(ent, component.tag_virus.new())
     engine.entities:add_component(ent, position)
     engine.entities:add_component(ent, sprite)
     engine.entities:add_component(ent, script)

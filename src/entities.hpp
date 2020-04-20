@@ -37,7 +37,9 @@ class ember_database : public ginseng::database {
 public:
     using net_id = std::int64_t;
 
-    void on_destroy_entity(std::function<void(net_id id)> func);
+    void on_destroy_entity(std::function<void(ent_id id)> func);
+
+    void destroy_entity(ent_id eid);
 
     template <typename... Coms>
     auto serialize_entity(ent_id eid) -> nlohmann::json {
@@ -47,7 +49,7 @@ public:
 private:
     net_id next_id = 1;
     std::unordered_map<net_id, ent_id> netid_to_entid;
-    std::function<void(net_id id)> destroy_entity_callback;
+    std::function<void(ent_id id)> destroy_entity_callback;
 };
 
 namespace scripting {

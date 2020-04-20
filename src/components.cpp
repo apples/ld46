@@ -28,6 +28,7 @@ void register_all_components(sol::table& table) {
     register_type<controller>(table);
     register_type<body>(table);
     register_type<food>(table);
+    register_type<death_notifier>(table);
 }
 
 } //namespace component

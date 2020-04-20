@@ -145,6 +145,13 @@ struct food {
 REGISTER(food,
          MEMBER(amount))
 
+struct death_notifier {
+    std::vector<ember_database::ent_id> ents;
+};
+
+REGISTER(death_notifier,
+         MEMBER(ents))
+
 } //namespace component
 
 #undef TAG
