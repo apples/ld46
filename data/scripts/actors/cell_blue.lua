@@ -16,6 +16,8 @@ function cell_blue.update(eid, dt)
     local tile_x = math.floor(position.pos.x + 0.5)
     local tile_y = math.floor(position.pos.y + 0.5)
 
+    local moving_to = state.path and state.path[state.path_i] or { x = tile_x, y = tile_y }
+
     local function find_new_target()
         verbose('  find_new_target()')
         state.path = nil
@@ -23,7 +25,7 @@ function cell_blue.update(eid, dt)
         local best_score = nil
         local potential_targets = {}
 
-        traverse_breadth_first({ x = tile_x, y = tile_y }, function (where, tile)
+        traverse_breadth_first(moving_to, function (where, tile)
             if tile.type == TILE_CAP then
                 local score = math.abs(where.x - tile_x) + math.abs(where.y - tile_y)
                 if best_score == nil or score < best_score then
@@ -59,7 +61,7 @@ function cell_blue.update(eid, dt)
         verbose('has target')
         if not state.path or state.version ~= game_state.board_version then
             verbose('needs new path')
-            local path = pathfind({ x = tile_x, y = tile_y }, state.target)
+            local path = pathfind(moving_to, state.target)
 
             if path then
                 verbose('path found (len = ' .. #path .. ')')

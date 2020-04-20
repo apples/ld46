@@ -1,6 +1,7 @@
 local engine = require('engine')
 local heart = require('archetypes.heart')
 local bubble_spawner = require('archetypes.bubble_spawner')
+local virus_a_spawner = require('archetypes.virus_a_spawner')
 
 local function mkspr_frames(r)
     return function (sprite)
@@ -151,9 +152,9 @@ function traverse_breadth_first(start, cb)
     trace_pop('traverse_breadth_first')
 end
 
-function pathfind(source, dest)
+function pathfind(source, dest, pass_caps)
     trace_push('pathfind')
-    local r = pathfind_fast(game_state.board, source, dest)
+    local r = pathfind_fast(game_state.board, source, dest, pass_caps or false)
     trace_pop('pathfind')
     return #r > 0 and r or nil
 end
@@ -174,5 +175,6 @@ gui_state = {
 
 heart()
 bubble_spawner()
+virus_a_spawner()
 
 print('init done')

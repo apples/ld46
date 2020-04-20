@@ -15,8 +15,8 @@ function bubble.update(eid, dt)
     local state = script.state
 
     heart_targeter(position, state, function ()
-        verbose('on heart, healing')
-        game_state.health = game_state.health + 1
+        verbose('on heart, hurting')
+        game_state.health = game_state.health - 10
         verbose('my purpose has been fulfilled')
         engine.entities:destroy_entity(eid)
     end)
@@ -30,4 +30,3 @@ function bubble.on_click(eid, pos, loc)
 end
 
 return bubble
-

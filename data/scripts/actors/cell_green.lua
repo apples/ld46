@@ -45,6 +45,8 @@ function cell_green.update(eid, dt)
         return tile.type == TILE_NE or tile.type == TILE_SE or tile.type == TILE_NW or tile.type == TILE_SW
     end
 
+    local moving_to = state.path and state.path[state.path_i] or { x = tile_x, y = tile_y }
+
     local function find_new_target()
         verbose('  find_new_target()')
         state.path = nil
@@ -55,7 +57,7 @@ function cell_green.update(eid, dt)
         local okay_score = 0
         local okay_targets = {}
 
-        traverse_breadth_first({ x = tile_x, y = tile_y }, function (where, tile)
+        traverse_breadth_first(moving_to, function (where, tile)
             local score = math.abs(where.x - tile_x) + math.abs(where.y - tile_y)
             if is_good_target(where, tile) then
                 if best_score == nil or score < best_score then
@@ -102,7 +104,7 @@ function cell_green.update(eid, dt)
         verbose('has target')
         if not state.path or state.version ~= game_state.board_version then
             verbose('needs new path')
-            local path = pathfind({ x = tile_x, y = tile_y }, state.target)
+            local path = pathfind(moving_to, state.target)
 
             if path then
                 verbose('path found (len = ' .. #path .. ')')

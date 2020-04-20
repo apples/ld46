@@ -1,18 +1,18 @@
 local engine = require('engine')
-local bubble = require('archetypes.bubble')
+local virus_a = require('archetypes.virus_a')
 local spawner = require('actors.spawner')
 
 local function verbose(s)
     print(s)
 end
 
-local bubble_spawner = {}
+local virus_a_spawner = {}
 
-function bubble_spawner.update(eid, dt)
-    verbose('bubble_spawner')
+function virus_a_spawner.update(eid, dt)
+    verbose('virus_a_spawner')
 
-    local spawnloc = spawner(1/256, function (where, tile)
-        if tile.type == TILE_NE or tile.type == TILE_SE or tile.type == TILE_NW or tile.type == TILE_SW then
+    local spawnloc = spawner(1/512, function (where, tile)
+        if tile.type == TILE_CAP then
             local N = get_tile_type(where.x, where.y + 1)
             local S = get_tile_type(where.x, where.y - 1)
             local E = get_tile_type(where.x + 1, where.y)
@@ -26,7 +26,7 @@ function bubble_spawner.update(eid, dt)
     end)
 
     if spawnloc then
-        bubble(spawnloc)
+        virus_a(spawnloc)
     end
 
     verbose('done.')
@@ -34,7 +34,7 @@ function bubble_spawner.update(eid, dt)
     verbose = function () end
 end
 
-function bubble_spawner.on_click(eid, pos, loc)
+function virus_a_spawner.on_click(eid, pos, loc)
 end
 
-return bubble_spawner
+return virus_a_spawner

@@ -43,7 +43,7 @@ bool operator<(const path_step& a, const path_step& b) {
     #define LOG flog
 #endif
 
-std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol::table lua_dest) try {
+std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol::table lua_dest, bool pass_caps) try {
     LOG << "Pathfinding..." << "\n";
     auto xmin = 1;
     auto xmax = 1;
@@ -129,6 +129,10 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
         }
     };
 
+    const auto omnidir = [&](tile_type t) {
+        return t == tile_type::CROSS || pass_caps && t == tile_type::CAP;
+    };
+
     while (!q.empty()) {
         const auto next = q.top();
         q.pop();
@@ -161,53 +165,53 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
 
         switch (type) {
         case tile_type::SW: {
-            if (S == tile_type::NE || S == tile_type::NW || S == tile_type::CROSS) {
+            if (S == tile_type::NE || S == tile_type::NW || omnidir(S)) {
                 push(next, {next.xy.x, next.xy.y - 1});
             }
-            if (W == tile_type::SE || W == tile_type::NE || W == tile_type::CROSS) {
+            if (W == tile_type::SE || W == tile_type::NE || omnidir(W)) {
                 push(next, {next.xy.x - 1, next.xy.y});
             }
             break;
         }
         case tile_type::SE: {
-            if (S == tile_type::NE || S == tile_type::NW || S == tile_type::CROSS) {
+            if (S == tile_type::NE || S == tile_type::NW || omnidir(S)) {
                 push(next, {next.xy.x, next.xy.y - 1});
             }
-            if (E == tile_type::SW || E == tile_type::NW || E == tile_type::CROSS) {
+            if (E == tile_type::SW || E == tile_type::NW || omnidir(E)) {
                 push(next, {next.xy.x + 1, next.xy.y});
             }
             break;
         }
         case tile_type::NW: {
-            if (N == tile_type::SE || N == tile_type::SW || N == tile_type::CROSS) {
+            if (N == tile_type::SE || N == tile_type::SW || omnidir(N)) {
                 push(next, {next.xy.x, next.xy.y + 1});
             }
-            if (W == tile_type::SE || W == tile_type::NE || W == tile_type::CROSS) {
+            if (W == tile_type::SE || W == tile_type::NE || omnidir(W)) {
                 push(next, {next.xy.x - 1, next.xy.y});
             }
             break;
         }
         case tile_type::NE: {
-            if (N == tile_type::SE || N == tile_type::SW || N == tile_type::CROSS) {
+            if (N == tile_type::SE || N == tile_type::SW || omnidir(N)) {
                 push(next, {next.xy.x, next.xy.y + 1});
             }
-            if (E == tile_type::SW || E == tile_type::NW || E == tile_type::CROSS) {
+            if (E == tile_type::SW || E == tile_type::NW || omnidir(E)) {
                 push(next, {next.xy.x + 1, next.xy.y});
             }
             break;
         }
         case tile_type::CROSS:
         case tile_type::CAP: {
-            if (N == tile_type::SE || N == tile_type::SW || N == tile_type::CROSS) {
+            if (N == tile_type::SE || N == tile_type::SW || omnidir(N)) {
                 push(next, {next.xy.x, next.xy.y + 1});
             }
-            if (S == tile_type::NE || S == tile_type::NW || S == tile_type::CROSS) {
+            if (S == tile_type::NE || S == tile_type::NW || omnidir(S)) {
                 push(next, {next.xy.x, next.xy.y - 1});
             }
-            if (E == tile_type::SW || E == tile_type::NW || E == tile_type::CROSS) {
+            if (E == tile_type::SW || E == tile_type::NW || omnidir(E)) {
                 push(next, {next.xy.x + 1, next.xy.y});
             }
-            if (W == tile_type::SE || W == tile_type::NE || W == tile_type::CROSS) {
+            if (W == tile_type::SE || W == tile_type::NE || omnidir(W)) {
                 push(next, {next.xy.x - 1, next.xy.y});
             }
         }
