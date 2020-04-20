@@ -40,7 +40,9 @@ void register_all_components(sol::table& table);
 TAG(tag_heart);
 TAG(tag_block);
 TAG(tag_cell);
+TAG(tag_cell_white);
 TAG(tag_virus);
+TAG(tag_virus_c);
 
 struct net_id {
     ember_database::net_id id;

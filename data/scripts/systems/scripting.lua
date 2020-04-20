@@ -9,7 +9,11 @@ function scripting.visit(dt)
         function (eid, script)
             if script.next_tick == 0 then
                 local script_impl = require('actors.' .. script.name)
-                script_impl.update(eid, dt)
+                local success, result = pcall(script_impl.update, eid, dt)
+                if not success then
+                    print(result)
+                    crash()
+                end
             elseif script.next_tick > 0 then
                 script.next_tick = script.next_tick - 1
             end

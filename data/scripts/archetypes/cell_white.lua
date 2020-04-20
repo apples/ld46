@@ -20,6 +20,7 @@ return function(init)
     script.state = {}
 
     engine.entities:add_component(ent, component.tag_cell.new())
+    engine.entities:add_component(ent, component.tag_cell_white.new())
     engine.entities:add_component(ent, position)
     engine.entities:add_component(ent, sprite)
     engine.entities:add_component(ent, script)
