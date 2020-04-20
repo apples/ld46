@@ -9,7 +9,16 @@ function pather.move(state, position, tile_x, tile_y)
         local adx = math.abs(dx)
         local ady = math.abs(dy)
 
-        if get_tile_type(tile_x, tile_y) ~= TILE_CAP or math.random() < 0.5 then
+        local on_cap = get_tile_type(tile_x, tile_y) == TILE_CAP
+
+        if on_cap then
+            state.cap_tick = (state.cap_tick or 0) + 1
+            if state.cap_tick == 4 then
+                state.cap_tick = 1
+            end
+        end
+
+        if not on_cap or state.cap_tick == 3 then
             if adx >= 1/16 then
                 position.pos.x = position.pos.x + dx/adx/16
             end

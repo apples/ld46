@@ -197,8 +197,8 @@ gui_state = {
 }
 
 heart()
---bubble_spawner()
+bubble_spawner()
 virus_a_spawner()
---virus_b_spawner()
+virus_b_spawner()
 
 print('init done')

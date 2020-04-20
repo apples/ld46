@@ -11,7 +11,14 @@ local bubble_spawner = {}
 function bubble_spawner.update(eid, dt)
     verbose('bubble_spawner')
 
-    local spawnloc = spawner(1/256, function (where, tile)
+    local script = engine.entities:get_component(eid, component.script)
+    local state = script.state
+
+    state.timer = state.timer + dt
+
+    local rate = math.pow(1/512, math.sin(state.timer) * 0.5 + 1)
+
+    local spawnloc = spawner(rate, function (where, tile)
         if tile.type == TILE_NE or tile.type == TILE_SE or tile.type == TILE_NW or tile.type == TILE_SW then
             local N = get_tile_type(where.x, where.y + 1)
             local S = get_tile_type(where.x, where.y - 1)

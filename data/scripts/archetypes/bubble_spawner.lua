@@ -7,7 +7,9 @@ return function(init)
 
     local script = component.script.new()
     script.name = 'bubble_spawner'
-    script.state = {}
+    script.state = {
+        timer = 0
+    }
 
     engine.entities:add_component(ent, script)
 
