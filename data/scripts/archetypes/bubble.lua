@@ -11,12 +11,12 @@ return function(init)
     position.z = 2
 
     local sprite = component.sprite.new()
-    SPRITE_CELL_BLUE(sprite)
-    sprite.speed = 4
+    SPRITE_BUBBLE(sprite)
+    sprite.speed = 3
     sprite.bounce = true
 
     local script = component.script.new()
-    script.name = 'cell_blue'
+    script.name = 'bubble'
     script.state = {}
 
     engine.entities:add_component(ent, position)

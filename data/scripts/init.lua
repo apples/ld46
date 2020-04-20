@@ -1,5 +1,6 @@
 local engine = require('engine')
 local heart = require('archetypes.heart')
+local bubble_spawner = require('archetypes.bubble_spawner')
 
 local function mkspr_frames(r)
     return function (sprite)
@@ -29,6 +30,7 @@ SPRITE_CELL_GREEN = mkspr_frames(5)
 SPRITE_VIRUS_A = mkspr_frames(6)
 SPRITE_VIRUS_B = mkspr_frames(7)
 SPRITE_VIRUS_C = mkspr_frames(8)
+SPRITE_BUBBLE = mkspr_frames(9)
 
 game_state = {
     board_version = 1,
@@ -171,5 +173,6 @@ gui_state = {
 }
 
 heart()
+bubble_spawner()
 
 print('init done')
