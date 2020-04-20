@@ -1,4 +1,5 @@
 local engine = require('engine')
+local pather = require('actors.pather')
 
 local function verbose(s)
     print(s)
@@ -125,30 +126,7 @@ function cell_green.update(eid, dt)
         end
     end
 
-    if state.path then
-        verbose('has path, moving (path_i = ' .. state.path_i .. ', len = ' .. #state.path .. ')')
-        local dest = state.path[state.path_i]
-        local dx = dest.x - position.pos.x
-        local dy = dest.y - position.pos.y
-        local adx = math.abs(dx)
-        local ady = math.abs(dy)
-
-        if adx >= 1/16 then
-            position.pos.x = position.pos.x + dx/adx/16
-        end
-
-        if ady >= 1/16 then
-            position.pos.y = position.pos.y + dy/ady/16
-        end
-
-        if adx < 1/16 and ady < 1/16 then
-            verbose('path step reached, advancing')
-            local next = state.path_i + 1
-            if next <= #state.path then
-                state.path_i = next
-            end
-        end
-    end
+    pather.move(state, position, tile_x, tile_y)
 
     if state.target and tile_x == state.target.x and tile_y == state.target.y then
         local cur_tile = get_tile(tile_x, tile_y)

@@ -43,6 +43,8 @@ bool operator<(const path_step& a, const path_step& b) {
     #define LOG flog
 #endif
 
+static constexpr auto cap_cost = 3;
+
 std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol::table lua_dest, bool pass_caps) try {
     LOG << "Pathfinding..." << "\n";
     auto xmin = 1;
@@ -109,7 +111,9 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
 
     auto q = std::priority_queue<path_step>();
 
-    q.push({ dest, 1, get_H(dest) + 1, std::nullopt });
+    const auto start_tile_type = get_tile_type(dest);
+
+    q.push({ dest, start_tile_type == tile_type::CAP ? cap_cost : 1, get_H(dest) + 1, std::nullopt });
 
     const auto mark_visited = [&](const path_step& cur) {
         LOG << "Visiting " << cur.xy.x << "," << cur.xy.y << " (cost = " << cur.cost << ", value = " << cur.value << ")" << "\n";
@@ -122,7 +126,7 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
     const auto push = [&](const path_step& next, glm::ivec2 xy) {
         if (auto tile = get_tile(xy)) {
             if (!tile->visited) {
-                const auto cost = next.cost + 1;
+                const auto cost = next.cost + (tile->type == tile_type::CAP ? cap_cost : 1);
                 const auto value = cost + get_H(xy);
                 LOG << "  Pushing " << xy.x << "," << xy.y << " " << cost << " " << value << "\n";
                 q.push({ xy, cost, value, next.xy });
@@ -145,18 +149,20 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
             auto result = std::vector<glm::vec2>();
             result.reserve(next.cost);
             auto cur = std::optional<glm::ivec2>(next.xy);
+            auto result_cost = 0;
             while (cur) {
                 LOG << "    " << cur->x << "," << cur->y << "\n";
                 result.push_back({cur->x, cur->y});
                 if (auto tile = get_tile(*cur)) {
                     cur = tile->next;
+                    result_cost += tile->type == tile_type::CAP ? cap_cost : 1;
                 } else {
                     LOG << "  Bad tile, aborting\n";
                     return {};
                 }
             }
             LOG << "  Checking (cost = " << next.cost << ", size = " << result.size() << ")" << "\n";
-            if (result.size() != next.cost) {
+            if (result_cost != next.cost) {
                 LOG << "Bad path length!\n";
                 return {};
             }
