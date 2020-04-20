@@ -11,7 +11,7 @@ local virus_a_spawner = {}
 function virus_a_spawner.update(eid, dt)
     verbose('virus_a_spawner')
 
-    local spawnloc = spawner(1/512, function (where, tile)
+    local spawnloc = spawner(1/2048, function (where, tile)
         if tile.type == TILE_CAP then
             local N = get_tile_type(where.x, where.y + 1)
             local S = get_tile_type(where.x, where.y - 1)

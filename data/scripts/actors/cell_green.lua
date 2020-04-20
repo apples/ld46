@@ -15,6 +15,10 @@ function cell_green.update(eid, dt)
 
     local tile_x = math.floor(position.pos.x + 0.5)
     local tile_y = math.floor(position.pos.y + 0.5)
+    if not get_tile_type(tile_x, tile_y) then
+        engine.entities:destroy_entity(eid)
+        return
+    end
 
     local function is_good_target(where, tile)
         local N = get_tile_type(where.x, where.y + 1)
@@ -77,14 +81,16 @@ function cell_green.update(eid, dt)
             return true
         end)
 
-        if #potential_targets > 0 then
-            local roll = math.random(#potential_targets)
-            state.target = potential_targets[roll]
+        local maxroll = #potential_targets * 3 + #okay_targets
+
+        if maxroll > 0 then
+            local roll = math.random(maxroll)
+            if roll <= #potential_targets * 3 then
+                state.target = potential_targets[math.floor((roll - 1) / 3) + 1]
+            else
+                state.target = okay_targets[roll - #potential_targets * 3]
+            end
             verbose('  target found (x = ' .. state.target.x .. ', y = ' .. state.target.y .. ')')
-        elseif #okay_targets > 0 then
-            local roll = math.random(#okay_targets)
-            state.target = okay_targets[roll]
-            verbose('  okay target found (x = ' .. state.target.x .. ', y = ' .. state.target.y .. ')')
         end
     end
 

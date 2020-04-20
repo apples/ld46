@@ -14,6 +14,13 @@ function bubble.update(eid, dt)
     local script = engine.entities:get_component(eid, component.script)
     local state = script.state
 
+    local tile_x = math.floor(position.pos.x + 0.5)
+    local tile_y = math.floor(position.pos.y + 0.5)
+    if not get_tile_type(tile_x, tile_y) then
+        engine.entities:destroy_entity(eid)
+        return
+    end
+
     heart_targeter(position, state, function ()
         verbose('on heart, healing')
         game_state.health = game_state.health + 1

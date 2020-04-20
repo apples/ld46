@@ -15,6 +15,10 @@ function cell_blue.update(eid, dt)
 
     local tile_x = math.floor(position.pos.x + 0.5)
     local tile_y = math.floor(position.pos.y + 0.5)
+    if not get_tile_type(tile_x, tile_y) then
+        engine.entities:destroy_entity(eid)
+        return
+    end
 
     local moving_to = state.path and state.path[state.path_i] or { x = tile_x, y = tile_y }
 
@@ -27,13 +31,7 @@ function cell_blue.update(eid, dt)
 
         traverse_breadth_first(moving_to, function (where, tile)
             if tile.type == TILE_CAP then
-                local score = math.abs(where.x - tile_x) + math.abs(where.y - tile_y)
-                if best_score == nil or score < best_score then
-                    best_score = score
-                    potential_targets = { where }
-                elseif score == best_score then
-                    potential_targets[#potential_targets + 1] = where
-                end
+                potential_targets[#potential_targets + 1] = where
             end
             return true
         end)

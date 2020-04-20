@@ -1,6 +1,8 @@
 local engine = require('engine')
 local heart = require('archetypes.heart')
 local bubble_spawner = require('archetypes.bubble_spawner')
+local cell_blue = require('archetypes.cell_blue')
+local cell_green = require('archetypes.cell_green')
 local virus_a_spawner = require('archetypes.virus_a_spawner')
 local virus_b_spawner = require('archetypes.virus_b_spawner')
 
@@ -39,6 +41,14 @@ game_state = {
     board = {},
     health = 100,
 }
+
+function buy_blue()
+    cell_blue()
+end
+
+function buy_green()
+    cell_green()
+end
 
 function set_tile(x, y, t)
     local existing_tile = get_tile(x, y)
@@ -178,8 +188,7 @@ gui_state = {
     fps = 0,
     debug_strings = {},
     debug_vals = {},
-    game_state = game_state,
-    shop_target = nil
+    game_state = game_state
 }
 
 heart()

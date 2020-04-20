@@ -157,7 +157,8 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
             }
             LOG << "  Checking (cost = " << next.cost << ", size = " << result.size() << ")" << "\n";
             if (result.size() != next.cost) {
-                throw std::runtime_error("Bad path length!");
+                LOG << "Bad path length!\n";
+                return {};
             }
             return result;
         }
