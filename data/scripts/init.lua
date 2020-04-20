@@ -32,7 +32,8 @@ SPRITE_VIRUS_C = mkspr_frames(8)
 
 game_state = {
     board_version = 1,
-    board = {}
+    board = {},
+    health = 100,
 }
 
 function set_tile(x, y, t)

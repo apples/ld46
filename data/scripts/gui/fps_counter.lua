@@ -7,7 +7,7 @@ return function(props)
 
     local color, setColor = vdom.useState(1)
 
-    local size, setSize = vdom.useState(4)
+    local size, setSize = vdom.useState(6)
 
     local onClick = vdom.useCallback(
         function ()
@@ -22,6 +22,7 @@ return function(props)
         {
             halign='right',
             valign='top',
+            top=0,
             height = size,
             color = colors[color],
             text = context.fps,
