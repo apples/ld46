@@ -1,9 +1,9 @@
 
 local pather = {}
 
-function pather.move(state, position, tile_x, tile_y)
-    if state.path then
-        local dest = state.path[state.path_i]
+function pather.move(state, position, tile_x, tile_y, final_dest)
+    if state.path or final_dest then
+        local dest = state.path and state.path[state.path_i] or final_dest
         local dx = dest.x - position.pos.x
         local dy = dest.y - position.pos.y
         local adx = math.abs(dx)
@@ -28,7 +28,7 @@ function pather.move(state, position, tile_x, tile_y)
             end
         end
 
-        if adx < 1/16 and ady < 1/16 then
+        if state.path and adx < 1/16 and ady < 1/16 then
             local next = state.path_i + 1
             if next <= #state.path then
                 state.path_i = next

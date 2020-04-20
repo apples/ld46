@@ -6,6 +6,7 @@ local cell_green = require('archetypes.cell_green')
 local cell_white = require('archetypes.cell_white')
 local virus_a_spawner = require('archetypes.virus_a_spawner')
 local virus_b_spawner = require('archetypes.virus_b_spawner')
+local virus_c_spawner = require('archetypes.virus_c_spawner')
 
 local function mkspr_frames(r)
     return function (sprite)
@@ -197,8 +198,9 @@ gui_state = {
 }
 
 heart()
-bubble_spawner()
-virus_a_spawner()
-virus_b_spawner()
+--bubble_spawner()
+--virus_a_spawner()
+--virus_b_spawner()
+virus_c_spawner()
 
 print('init done')
