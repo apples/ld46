@@ -2,6 +2,7 @@ local engine = require('engine')
 local heart = require('archetypes.heart')
 local bubble_spawner = require('archetypes.bubble_spawner')
 local virus_a_spawner = require('archetypes.virus_a_spawner')
+local virus_b_spawner = require('archetypes.virus_b_spawner')
 
 local function mkspr_frames(r)
     return function (sprite)
@@ -42,7 +43,14 @@ game_state = {
 function set_tile(x, y, t)
     local existing_tile = get_tile(x, y)
 
-    if existing_tile then
+    if t == TILE_VOID then
+        if existing_tile then
+            engine.entities:destroy_entity(existing_tile.ent)
+            game_state.board[x][y] = nil
+        else
+            return
+        end
+    elseif existing_tile then
         local ent = existing_tile.ent
 
         local sprite = engine.entities:get_component(ent, component.sprite)
@@ -121,13 +129,13 @@ end
 
 function traverse_breadth_first(start, cb)
     trace_push('traverse_breadth_first')
-    local q = {start}
+    local q = {{ x = start.x, y = start.y, depth = 0 }}
     local visited = {}
 
-    local function push(x, y)
+    local function push(x, y, depth)
         if not visited[x] or not visited[x][y] then
             if not visited[x] then visited[x] = {} end
-            q[#q + 1] = { x = x, y = y}
+            q[#q + 1] = { x = x, y = y, depth = depth }
             visited[x][y] = true
         end
     end
@@ -136,6 +144,7 @@ function traverse_breadth_first(start, cb)
         local cur = table.remove(q, 1)
         local x = cur.x
         local y = cur.y
+        local depth = cur.depth
         local tile = get_tile(x, y)
 
         if tile then
@@ -145,7 +154,7 @@ function traverse_breadth_first(start, cb)
             end
 
             for _,v in ipairs(get_neighbors(tile)) do
-                push(x + v.x, y + v.y)
+                push(x + v.x, y + v.y, depth + 1)
             end
         end
     end
@@ -176,5 +185,6 @@ gui_state = {
 heart()
 bubble_spawner()
 virus_a_spawner()
+virus_b_spawner()
 
 print('init done')

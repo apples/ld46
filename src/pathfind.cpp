@@ -113,9 +113,10 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
 
     const auto mark_visited = [&](const path_step& cur) {
         LOG << "Visiting " << cur.xy.x << "," << cur.xy.y << " (cost = " << cur.cost << ", value = " << cur.value << ")" << "\n";
-        auto& tile = *get_tile(cur.xy);
-        tile.visited = true;
-        tile.next = cur.next;
+        if (auto tile = get_tile(cur.xy)) {
+            tile->visited = true;
+            tile->next = cur.next;
+        }
     };
 
     const auto push = [&](const path_step& next, glm::ivec2 xy) {
@@ -147,7 +148,12 @@ std::vector<glm::vec2> pathfind(sol::table lua_board, sol::table lua_source, sol
             while (cur) {
                 LOG << "    " << cur->x << "," << cur->y << "\n";
                 result.push_back({cur->x, cur->y});
-                cur = get_tile(*cur)->next;
+                if (auto tile = get_tile(*cur)) {
+                    cur = tile->next;
+                } else {
+                    LOG << "  Bad tile, aborting\n";
+                    return {};
+                }
             }
             LOG << "  Checking (cost = " << next.cost << ", size = " << result.size() << ")" << "\n";
             if (result.size() != next.cost) {
