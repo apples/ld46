@@ -11,7 +11,7 @@ local virus_b_spawner = {}
 function virus_b_spawner.update(eid, dt)
     verbose('virus_b_spawner')
 
-    local spawnloc = spawner(1/512, function (where, tile)
+    local spawnloc = spawner(1/1024, function (where, tile)
         if tile.type == TILE_NE or tile.type == TILE_SE or tile.type == TILE_NW or tile.type == TILE_SW then
             local N = get_tile_type(where.x, where.y + 1)
             local S = get_tile_type(where.x, where.y - 1)

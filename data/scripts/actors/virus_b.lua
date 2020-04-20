@@ -7,28 +7,46 @@ end
 local function blast(x, y, sx, sy)
     local wheres = {}
     local abort = false
-    print('begin blast at '..x..','..y..' start = '..sx..','..sy)
+    verbose('begin blast at '..x..','..y..' start = '..sx..','..sy)
     traverse_breadth_first({ x = x, y = y }, function (where, tile)
-        print('  '..where.x..','..where.y)
+        verbose('  '..where.x..','..where.y)
         if where.x == 0 and where.y == 0 then
-            print('    at heart, aborting')
+            verbose('    at heart, aborting')
             abort = true
             return false
         end
         if where.x ~= sx or where.y ~= sy then
-            print('    not at start, marking')
+            verbose('    not at start, marking')
             wheres[#wheres + 1] = where
         end
         return true
     end)
     if not abort then
-        print('  not aborted, removing')
+        verbose('  not aborted, removing')
         for _,v in ipairs(wheres) do
-            print('    '..v.x..','..v.y)
+            verbose('    '..v.x..','..v.y)
             set_tile(v.x, v.y, TILE_VOID)
         end
+        verbose('  fixing caps')
+        for _,v in ipairs(wheres) do
+            verbose('    '..v.x..','..v.y)
+
+            local N = get_tile_type(v.x, v.y + 1)
+            local S = get_tile_type(v.x, v.y - 1)
+            local E = get_tile_type(v.x + 1, v.y)
+            local W = get_tile_type(v.x - 1, v.y)
+
+            local N_connected = (N == TILE_SE or N == TILE_SW or N == TILE_CROSS)
+            local S_connected = (S == TILE_NE or S == TILE_NW or S == TILE_CROSS)
+            local E_connected = (E == TILE_NW or E == TILE_SW or E == TILE_CROSS)
+            local W_connected = (W == TILE_NE or W == TILE_SE or W == TILE_CROSS)
+
+            if N_connected or S_connected or E_connected or W_connected then
+                set_tile(v.x, v.y, TILE_CAP)
+            end
+        end
     end
-    print('done')
+    verbose('done')
 end
 
 local virus_b = {}
