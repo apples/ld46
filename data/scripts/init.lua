@@ -1,4 +1,5 @@
 local engine = require('engine')
+local visitor = require('visitor')
 local heart = require('archetypes.heart')
 local bubble_spawner = require('archetypes.bubble_spawner')
 local cell_blue = require('archetypes.cell_blue')
@@ -42,18 +43,29 @@ game_state = {
     board_version = 1,
     board = {},
     health = 100,
+    time = 0,
 }
+
+function goto_lose()
+    visitor.visit({}, function (eid)
+        engine.entities:destroy_entity(eid)
+    end)
+    gui_state.lose = true
+end
 
 function buy_blue()
     cell_blue()
+    game_state.health = game_state.health - 1
 end
 
 function buy_green()
     cell_green()
+    game_state.health = game_state.health - 5
 end
 
 function buy_white()
     cell_white()
+    game_state.health = game_state.health - 1
 end
 
 function set_tile(x, y, t)
@@ -184,24 +196,35 @@ function pathfind(source, dest, pass_caps)
     return #r > 0 and r or nil
 end
 
-set_tile(0, 0, TILE_CROSS)
-set_tile(-1, 0, TILE_CAP)
-set_tile(1, 0, TILE_CAP)
-set_tile(0, -1, TILE_CAP)
-set_tile(0, 1, TILE_CAP)
+function reset_game()
+    game_state = {
+        board_version = 1,
+        board = {},
+        health = 100,
+        time = 0,
+    }
 
-gui_state = {
-    fps = 0,
-    debug_strings = {},
-    debug_vals = {},
-    game_state = game_state
-}
+    set_tile(0, 0, TILE_CROSS)
+    set_tile(-1, 0, TILE_CAP)
+    set_tile(1, 0, TILE_CAP)
+    set_tile(0, -1, TILE_CAP)
+    set_tile(0, 1, TILE_CAP)
 
-heart()
-bubble_spawner()
-virus_a_spawner()
-virus_b_spawner()
-virus_c_spawner()
+    gui_state = {
+        fps = 0,
+        debug_strings = {},
+        debug_vals = {},
+        game_state = game_state
+    }
+
+    heart()
+    bubble_spawner()
+    virus_a_spawner()
+    virus_b_spawner()
+    virus_c_spawner()
+end
+
+reset_game()
 
 play_bgm('beat')
 
