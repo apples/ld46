@@ -21,7 +21,7 @@ function bubble_spawner.update(eid, dt)
     local rate = math.pow(1/512, pow)
 
     if not state.sfx and pow < 1 then
-        play_sfx('breathe')
+        play_sfx('breathe', 0.5)
         state.sfx = true
     end
 

@@ -24,7 +24,7 @@ function bubble.update(eid, dt)
     heart_targeter(position, state, function ()
         verbose('on heart, hurting')
         game_state.health = game_state.health - 1
-        play_sfx('hit')
+        play_sfx('hit', 1)
         verbose('my purpose has been fulfilled')
         engine.entities:destroy_entity(eid)
     end)

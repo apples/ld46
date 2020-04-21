@@ -103,11 +103,13 @@ function virus_c.update(eid, dt)
             math.abs(target_pos.pos.y - position.pos.y) < 0.5 then
                 move = false
                 if not engine.entities:has_component(state.target, component.tag_cell_white) then
-                    spawn_virus_c({ x = target_pos.pos.x, y = target_pos.pos.y })
-                    engine.entities:destroy_entity(state.target)
-                    play_sfx('virus')
-
-                    return
+                    if state.convert_cooldown < 0 then
+                        spawn_virus_c({ x = target_pos.pos.x, y = target_pos.pos.y })
+                        engine.entities:destroy_entity(state.target)
+                        play_sfx('virus', 1)
+                        state.convert_cooldown = 1 + math.random()
+                        return
+                    end
                 else
                     if state.rps_timer <= 0 then
                         verbose('rps time!')

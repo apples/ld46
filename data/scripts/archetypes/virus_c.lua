@@ -17,7 +17,9 @@ return function(init)
 
     local script = component.script.new()
     script.name = 'virus_c'
-    script.state = {}
+    script.state = {
+        convert_cooldown = 1 + math.random()
+    }
 
     engine.entities:add_component(ent, component.tag_virus.new())
     engine.entities:add_component(ent, component.tag_virus_c.new())

@@ -133,10 +133,11 @@ engine::engine() {
         return wav;
     }};
 
-    auto play_sfx = [this](const std::string& name) {
+    auto play_sfx = [this](const std::string& name, float vol) {
         auto wav_ptr = sfx_cache.get(name);
         soloud.stopAudioSource(*wav_ptr);
-        soloud.play(*wav_ptr);
+        auto hdl = soloud.play(*wav_ptr);
+        soloud.setVolume(hdl, vol);
     };
 
     auto play_bgm = [this](const std::string& name) {
