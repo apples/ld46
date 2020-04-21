@@ -15,4 +15,3 @@ function pan.visit(dt)
 end
 
 return pan
-

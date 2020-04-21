@@ -277,6 +277,8 @@ void engine::tick() {
                 {{0.f, 0.f},{0.f, 1.f},{1.f, 1.f},{1.f, 0.f}},
                 {{{{0,0,0},{1,1,1},{2,2,2}}},{{{2,2,2},{3,3,3},{0,0,0}}}});
 
+            auto proj = glm::ortho(-scrw, scrw, -scrh, scrh, -5.f, 5.f);
+
             sushi::set_texture(0, *tex);
             program_basic.set_texcoord_mat(glm::mat4(1.f));
             program_basic.set_MVP(proj * glm::translate(glm::mat4(1.f), glm::vec3{0, 0, -4}));
