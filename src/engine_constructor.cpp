@@ -186,6 +186,8 @@ engine::engine() {
         throw std::runtime_error("Init error: "s + err.what());
     }
 
+    lua["game_state"]["pan"] = std::ref(pan);
+
     gui_state = lua["gui_state"];
 
     std::cout << "initting gui state" << std::endl;

@@ -2,6 +2,7 @@ local scripting = require('systems.scripting')
 local velocity = require('systems.velocity')
 local physics = require('systems.physics')
 local animation = require('systems.animation')
+local pan = require('systems.pan')
 
 local systems = {}
 
@@ -16,6 +17,7 @@ function systems.visit(delta)
     run('velocity', velocity, delta)
     run('physics', physics, delta)
     run('animation', animation, delta)
+    run('pan', pan, delta)
 end
 
 return systems

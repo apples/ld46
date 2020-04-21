@@ -228,18 +228,18 @@ void engine::tick() {
     if (next_tick <= 0s) {
         const Uint8 *keys = SDL_GetKeyboardState(nullptr);
 
-        auto set_key = [&](const std::string &name, int scancode) {
-            auto down = bool(keys[scancode]);
+        auto set_key = [&](const std::string &name, int scancode, int scalt = -1) {
+            auto down = bool(keys[scancode]) || (scalt != -1 && bool(keys[scalt]));
             luakeys[name + "_pressed"] = down && !bool(luakeys[name]);
             luakeys[name] = down;
         };
 
-        set_key("left", SDL_SCANCODE_LEFT);
-        set_key("right", SDL_SCANCODE_RIGHT);
-        set_key("up", SDL_SCANCODE_UP);
-        set_key("down", SDL_SCANCODE_DOWN);
+        set_key("left", SDL_SCANCODE_LEFT, SDL_SCANCODE_A);
+        set_key("right", SDL_SCANCODE_RIGHT, SDL_SCANCODE_D);
+        set_key("up", SDL_SCANCODE_UP, SDL_SCANCODE_W);
+        set_key("down", SDL_SCANCODE_DOWN, SDL_SCANCODE_S);
         set_key("jump", SDL_SCANCODE_Z);
-        set_key("action", SDL_SCANCODE_X);
+        set_key("action", SDL_SCANCODE_SPACE);
 
         constexpr auto rate = 60;
 
@@ -255,7 +255,7 @@ void engine::tick() {
         const auto scrw = 25.f / 2.f;
         const auto scrh = 18.75f / 2.f;
 
-        auto proj = glm::ortho(-scrw, scrw, -scrh, scrh, -5.f, 5.f);
+        auto proj = glm::ortho(-scrw + pan.x, scrw + pan.x, -scrh + pan.y, scrh + pan.y, -5.f, 5.f);
 
         program_basic.bind();
         program_basic.set_cam_forward({0.0, 0.0, -1.0});

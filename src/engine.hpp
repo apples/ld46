@@ -83,4 +83,5 @@ private:
     tracing::context tracing_context;
     bool enable_tracing;
     clock::duration next_renderer_gc;
+    glm::vec2 pan = {0.f,0.f};
 };
