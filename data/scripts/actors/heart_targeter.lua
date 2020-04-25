@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/heart_targeter') end
+
 local pather = require('actors.pather')
 
 local function verbose(s)

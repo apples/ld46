@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/bubble_spawner') end
+
 local engine = require('engine')
 local bubble = require('archetypes.bubble')
 local spawner = require('actors.spawner')

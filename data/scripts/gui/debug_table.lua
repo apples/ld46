@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.gui/debug_table') end
+
 local vdom = require('vdom')
 
 local function textrow(props)

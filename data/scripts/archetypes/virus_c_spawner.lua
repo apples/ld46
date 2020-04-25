@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.archetypes/virus_c_spawner') end
+
 local engine = require('engine')
 
 return function(init)

@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.gui/gameplay_gui') end
+
 local vdom = require('vdom')
 local fps_counter = require('gui.fps_counter')
 local debug_display = require('gui.debug_display')

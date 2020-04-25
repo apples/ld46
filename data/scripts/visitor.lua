@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.visitor') end
+
 local engine = require('engine')
 local linq = require('linq')
 

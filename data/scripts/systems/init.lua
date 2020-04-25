@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.systems/init') end
+
 local scripting = require('systems.scripting')
 local velocity = require('systems.velocity')
 local physics = require('systems.physics')

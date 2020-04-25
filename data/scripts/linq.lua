@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.linq') end
+
 
 local linq = {}
 local where_iter = {}

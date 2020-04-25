@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/heart') end
+
 local engine = require('engine')
 
 local heart = {}

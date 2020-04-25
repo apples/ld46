@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/spawner') end
+
 
 return function(rate, is_valid)
     local opens = {}

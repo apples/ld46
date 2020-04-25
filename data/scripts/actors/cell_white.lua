@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/cell_white') end
+
 local engine = require('engine')
 local visitor = require('visitor')
 local pather = require('actors.pather')

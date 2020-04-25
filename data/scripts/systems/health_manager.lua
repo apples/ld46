@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.systems/health_manager') end
+
 local visitor = require('visitor')
 
 local health_manager = {}

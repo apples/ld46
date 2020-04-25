@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.gui/debug_display') end
+
 local vdom = require('vdom')
 local linq = require('linq')
 local debug_table = require('gui.debug_table')

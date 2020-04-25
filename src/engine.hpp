@@ -38,7 +38,7 @@
 
 class engine {
 public:
-    engine();
+    engine(SDL_Window* g_window, SDL_GLContext glcontext);
 
     ~engine();
 

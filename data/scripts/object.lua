@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.object') end
+
 local object = {}
 
 function object.pick(src, ...)

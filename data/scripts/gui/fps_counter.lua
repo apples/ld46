@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.gui/fps_counter') end
+
 local vdom = require('vdom')
 
 local colors = { '#f0f', '#ff0', '#0ff' }

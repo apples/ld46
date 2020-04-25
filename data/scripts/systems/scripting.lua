@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.systems/scripting') end
+
 local engine = require('engine')
 local visitor = require('visitor')
 

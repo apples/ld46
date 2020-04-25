@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.init_gui') end
+
 local vdom = require('vdom')
 local gameplay_gui = require('gui.gameplay_gui')
 

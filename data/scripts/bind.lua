@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.bind') end
+
 return function (func, ...)
     local n = select('#', ...)
     local bound = {...}

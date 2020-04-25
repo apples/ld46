@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.vdom') end
+
 local function assign(dest, source)
     for k,v in pairs(source) do
         dest[k] = v

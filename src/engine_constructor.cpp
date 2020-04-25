@@ -12,7 +12,7 @@ auto imod(double x, double y) -> int {
 }
 }
 
-engine::engine() {
+engine::engine(SDL_Window* g_window, SDL_GLContext glcontext) : g_window(g_window), glcontext(glcontext) {
     config = emberjs::get_config();
 
     lua.open_libraries(
@@ -65,23 +65,6 @@ engine::engine() {
     display_width = config["display"]["width"];
     display_height = config["display"]["height"];
     aspect_ratio = float(display_width) / float(display_height);
-
-    g_window = SDL_CreateWindow(
-        "LD44",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        display_width,
-        display_height,
-        SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    glcontext = SDL_GL_CreateContext(g_window);
-
-    SDL_StartTextInput();
 
     glEnable(GL_DEPTH_TEST);
 

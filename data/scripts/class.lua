@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.class') end
+
 return function (base)
     local c = {}
     c.__index = c

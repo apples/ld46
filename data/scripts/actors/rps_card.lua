@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/rps_card') end
+
 local engine = require('engine')
 
 local function verbose(s)

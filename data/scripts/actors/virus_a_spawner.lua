@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.actors/virus_a_spawner') end
+
 local engine = require('engine')
 local virus_a = require('archetypes.virus_a')
 local spawner = require('actors.spawner')

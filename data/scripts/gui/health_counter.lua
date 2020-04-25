@@ -1,3 +1,5 @@
+if USE_JAM_VERSION then return require('jam_version.gui/health_counter') end
+
 local vdom = require('vdom')
 
 return function(props)
