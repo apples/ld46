@@ -16,10 +16,7 @@ function bubble_spawner.update(eid, dt)
     local script = engine.entities:get_component(eid, component.script)
     local state = script.state
 
-    state.timer = state.timer + dt
-
-
-    local pow = math.sin(state.timer) * 0.5 + 1;
+    local pow = math.sin(game_state.time) * 0.5 + 1;
     local rate = math.pow(1/512, pow)
 
     if not state.sfx and pow < 1 then

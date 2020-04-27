@@ -13,7 +13,10 @@ local virus_a_spawner = {}
 function virus_a_spawner.update(eid, dt)
     verbose('virus_a_spawner')
 
-    local spawnloc = spawner(1/1024 * get_spawn_rate(), {TILE_CAP})
+    local pow = math.sin(game_state.time / 9) * 0.5 + 1.4;
+    local rate = math.pow(1/1024, pow)
+
+    local spawnloc = spawner(rate * get_spawn_rate(), {TILE_CAP})
 
     if spawnloc then
         virus_a(spawnloc)

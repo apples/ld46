@@ -10,7 +10,6 @@ function health_manager.visit(dt)
         game_state.health = 0
         goto_lose()
     end
-    game_state.time = game_state.time + dt
 end
 
 return health_manager

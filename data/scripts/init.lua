@@ -52,10 +52,14 @@ game_state = {
     time = 0,
 }
 
+function get_difficulty()
+    return math.floor(game_state.time / 10)
+end
+
 function get_spawn_rate()
-    local d = math.floor(game_state.time / 10)
+    local d = get_difficulty()
     if d == 0 then return 0 end
-    return math.exp(1.1, d-1)
+    return math.exp(2, d-1)
 end
 
 function goto_lose()
@@ -226,7 +230,8 @@ function reset_game()
         fps = 0,
         debug_strings = {},
         debug_vals = {},
-        game_state = game_state
+        game_state = game_state,
+        virus_c = 0,
     }
 
     heart()

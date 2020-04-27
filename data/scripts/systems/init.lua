@@ -6,6 +6,7 @@ local physics = require('systems.physics')
 local animation = require('systems.animation')
 local pan = require('systems.pan')
 local hm = require('systems.health_manager')
+local dm = require('systems.difficulty_manager')
 
 local systems = {}
 
@@ -22,6 +23,7 @@ function systems.visit(delta)
     run('animation', animation, delta)
     run('pan', pan, delta)
     run('hm', hm, delta)
+    run('dm', dm, delta)
 end
 
 return systems
