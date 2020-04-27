@@ -33,6 +33,8 @@ TILE_NE = 4
 TILE_CROSS = 5
 TILE_CAP = 6
 
+TILES_CORNERS = { TILE_NE, TILE_SE, TILE_NW, TILE_SW }
+
 SPRITE_HEART = mkspr_frames(1)
 SPRITE_BLOCK = mkspr_frames(2)
 SPRITE_CELL_WHITE = mkspr_frames(3)
@@ -49,6 +51,12 @@ game_state = {
     health = 100,
     time = 0,
 }
+
+function get_spawn_rate()
+    local d = math.floor(game_state.time / 10)
+    if d == 0 then return 0 end
+    return math.exp(1.1, d-1)
+end
 
 function goto_lose()
     visitor.visit({}, function (eid)

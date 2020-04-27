@@ -106,9 +106,9 @@ function virus_c.update(eid, dt)
             math.abs(target_pos.pos.y - position.pos.y) < 0.5 then
                 move = false
                 if not engine.entities:has_component(state.target, component.tag_cell_white) then
-                    print('collide! cd = ' .. state.convert_cooldown)
+                    verbose('collide! cd = ' .. state.convert_cooldown)
                     if state.convert_cooldown < 0 then
-                        print('convert!')
+                        verbose('convert!')
                         spawn_virus_c({ x = target_pos.pos.x, y = target_pos.pos.y, cd = 3 + math.random() * 3 })
                         engine.entities:destroy_entity(state.target)
                         play_sfx('virus', 1)

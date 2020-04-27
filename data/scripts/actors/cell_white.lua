@@ -3,6 +3,7 @@ if USE_JAM_VERSION then return require('jam_version.actors/cell_white') end
 local engine = require('engine')
 local visitor = require('visitor')
 local pather = require('actors.pather')
+local random_picker = require('random_picker')
 
 local function verbose(s)
     print(s)
@@ -44,35 +45,14 @@ function cell_white.update(eid, dt)
     local function find_new_target()
         verbose('  find_new_target()')
 
-        local target = nil
-        local skips = 1
-        local weight = math.random()
+        local picker = random_picker.new()
 
-        local function calc_skips()
-            return math.floor(math.log(math.random())/math.log(1-weight))
-        end
-        
         verbose('    picking random virus')
         visitor.visit({ component.tag_virus }, function (e, tag)
-            verbose('    e '..e:get_index())
-            if not target then
-                verbose('      setting as default target')
-                target = e
-                skips = calc_skips()
-                return
-            end
-
-            if skips > 0 then
-                skips = skips - 1
-                verbose('    skipping '..e:get_index())
-            else
-                verbose('    rolling '..e:get_index())
-                target = e
-                weight = weight * math.random()
-                skips = calc_skips()
-            end
+            picker(e)
         end)
-        verbose('  algo done')
+
+        local target = picker.result[1]
 
         if target then
             if state.target and target:get_index() ~= state.target:get_index() then unsub_death() end
