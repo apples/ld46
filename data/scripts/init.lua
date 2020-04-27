@@ -1,5 +1,7 @@
 if USE_JAM_VERSION then return require('jam_version.init') end
 
+print('Using new version')
+
 local engine = require('engine')
 local visitor = require('visitor')
 local heart = require('archetypes.heart')

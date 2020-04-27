@@ -1,5 +1,6 @@
 
 #include "engine.hpp"
+#include "jam_version/engine.hpp"
 #include "version_selector.hpp"
 #include "sdl.hpp"
 
@@ -57,15 +58,21 @@ int main(int argc, char* argv[]) try {
     std::cout << "Success." << std::endl;
 
     #ifdef __EMSCRIPTEN__
-    auto init_jam_version = [g_window, glcontext]{};
-
-    auto init_new_version = [g_window, glcontext]{
-        auto fix_loop = [g_window, glcontext, old_loop = std::move(loop)]() mutable {
+    auto re_init = [](auto factory){
+        auto fix_loop = [factory = std::move(factory), old_loop = std::move(loop)]() mutable {
             old_loop = {};
-            auto e = std::make_shared<engine>(g_window, glcontext);
+            auto e = factory();
             loop = [e = std::move(e)]{ e->tick(); };
         };
         loop = fix_loop;
+    };
+
+    auto init_jam_version = [re_init, g_window, glcontext]{
+        re_init([g_window, glcontext]{ return std::make_shared<jam_version::engine>(g_window, glcontext); });
+    };
+
+    auto init_new_version = [re_init, g_window, glcontext]{
+        re_init([g_window, glcontext]{ return std::make_shared<engine>(g_window, glcontext); });
     };
 
     auto e = std::make_shared<version_selector>(g_window, glcontext, init_jam_version, init_new_version);
