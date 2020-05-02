@@ -9,10 +9,10 @@ return function(props)
             halign='left',
             valign='top',
             top=0,
-            left=200,
+            left=100,
             height = 8,
             color = '#fff',
-            text = 'Virus C: ' .. context.virus_c .. '%',
+            text = context.threats or '',
         }
     )
 end
