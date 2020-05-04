@@ -3,7 +3,7 @@ if USE_JAM_VERSION then return require('jam_version.archetypes/virus_b') end
 local engine = require('engine')
 
 return function(init)
-    init = init or {}
+    if not init or not init.target then error('Need init and target!') end
 
     local ent = engine.entities:create_entity()
 
@@ -20,7 +20,8 @@ return function(init)
     local script = component.script.new()
     script.name = 'virus_b'
     script.state = {
-        timer = 0
+        timer = 0,
+        target = init.target
     }
 
     engine.entities:add_component(ent, component.tag_virus.new())

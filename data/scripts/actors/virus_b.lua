@@ -1,6 +1,7 @@
 if USE_JAM_VERSION then return require('jam_version.actors/virus_b') end
 
 local engine = require('engine')
+local pather = require('actors.pather')
 
 local function verbose(s)
     print(s)
@@ -63,36 +64,72 @@ function virus_b.update(eid, dt)
     local tile_x = math.floor(position.pos.x + 0.5)
     local tile_y = math.floor(position.pos.y + 0.5)
 
-    local t = get_tile_type(tile_x, tile_y)
+    -- check target feasibility
 
-    if not t then
+    local t = get_tile_type(state.target.x, state.target.y)
+    if not t or t == TILE_CAP then
         verbose('failed')
         engine.entities:destroy_entity(eid)
         return
     end
 
-    state.timer = state.timer + dt
+    local moving_to = state.path and state.path[state.path_i] or { x = tile_x, y = tile_y }
 
-    if state.timer >= 5 then
-        local N = get_tile_type(tile_x, tile_y + 1)
-        local S = get_tile_type(tile_x, tile_y - 1)
-        local E = get_tile_type(tile_x + 1, tile_y)
-        local W = get_tile_type(tile_x - 1, tile_y)
+    local target_tile = get_tile(state.target.x, state.target.y)
 
-        local N_connected = N and (t == TILE_NE or t == TILE_NW or t == TILE_CROSS) and (N == TILE_SE or N == TILE_SW or N == TILE_CROSS or N == TILE_CAP)
-        local S_connected = S and (t == TILE_SE or t == TILE_SW or t == TILE_CROSS) and (S == TILE_NE or S == TILE_NW or S == TILE_CROSS or S == TILE_CAP)
-        local E_connected = E and (t == TILE_NE or t == TILE_SE or t == TILE_CROSS) and (E == TILE_NW or E == TILE_SW or E == TILE_CROSS or E == TILE_CAP)
-        local W_connected = W and (t == TILE_NW or t == TILE_SW or t == TILE_CROSS) and (W == TILE_NE or W == TILE_SE or W == TILE_CROSS or W == TILE_CAP)
+    -- check for pathfind updates
 
-        set_tile(tile_x, tile_y, TILE_CAP)
+    if not state.path or state.version ~= game_state.board_version then
+        verbose('needs new path')
+        local path = pathfind(moving_to, state.target, true)
 
-        if N_connected then blast(tile_x, tile_y + 1, tile_x, tile_y) end
-        if S_connected then blast(tile_x, tile_y - 1, tile_x, tile_y) end
-        if E_connected then blast(tile_x + 1, tile_y, tile_x, tile_y) end
-        if W_connected then blast(tile_x - 1, tile_y, tile_x, tile_y) end
+        if path then
+            verbose('path found (len = ' .. #path .. ')')
+            state.path = path
+            state.path_i = 1
+            state.version = game_state.board_version
+        else
+            verbose('path not found, failed')
+            engine.entities:destroy_entity(eid)
+            return
+        end
+    end
 
-        verbose('my purpose has been fulfilled')
-        engine.entities:destroy_entity(eid)
+    -- move
+
+    pather.move(state, position, tile_x, tile_y)
+
+    -- do work
+
+    local cur_tile = get_tile(tile_x, tile_y)
+
+    if tile_x == state.target.x and tile_y == state.target.y then
+        verbose('on target, working')
+        state.timer = (state.timer or 0) + dt
+        if state.timer >= 5 then
+            verbose('proc')
+            local N = get_tile_type(tile_x, tile_y + 1)
+            local S = get_tile_type(tile_x, tile_y - 1)
+            local E = get_tile_type(tile_x + 1, tile_y)
+            local W = get_tile_type(tile_x - 1, tile_y)
+
+            local N_connected = N and (t == TILE_NE or t == TILE_NW or t == TILE_CROSS) and (N == TILE_SE or N == TILE_SW or N == TILE_CROSS or N == TILE_CAP)
+            local S_connected = S and (t == TILE_SE or t == TILE_SW or t == TILE_CROSS) and (S == TILE_NE or S == TILE_NW or S == TILE_CROSS or S == TILE_CAP)
+            local E_connected = E and (t == TILE_NE or t == TILE_SE or t == TILE_CROSS) and (E == TILE_NW or E == TILE_SW or E == TILE_CROSS or E == TILE_CAP)
+            local W_connected = W and (t == TILE_NW or t == TILE_SW or t == TILE_CROSS) and (W == TILE_NE or W == TILE_SE or W == TILE_CROSS or W == TILE_CAP)
+
+            set_tile(tile_x, tile_y, TILE_CAP)
+
+            if N_connected then blast(tile_x, tile_y + 1, tile_x, tile_y) end
+            if S_connected then blast(tile_x, tile_y - 1, tile_x, tile_y) end
+            if E_connected then blast(tile_x + 1, tile_y, tile_x, tile_y) end
+            if W_connected then blast(tile_x - 1, tile_y, tile_x, tile_y) end
+
+            verbose('my purpose has been fulfilled')
+            engine.entities:destroy_entity(eid)
+        end
+    else
+        state.timer = 0
     end
 
     verbose('done.')

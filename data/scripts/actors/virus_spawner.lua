@@ -6,6 +6,10 @@ local spawner = require('actors.spawner')
 
 local spawners = {}
 
+function spawners.none()
+    -- do nothing
+end
+
 function spawners.a(value, difficulty, ratio)
     local rate = 1/1024 * (ratio or 1)
 
@@ -16,17 +20,25 @@ function spawners.a(value, difficulty, ratio)
     end
 end
 
-function spawners.none()
-    -- do nothing
-end
-
 function spawners.b(value, difficulty, ratio)
-    local rate = 1/1024 * (ratio or 1)
+    local rate = 1/2048 * (ratio or 1)
 
-    local spawnloc = spawner(rate * difficulty, TILES_CORNERS)
+    local target = spawner(rate * difficulty, TILES_CORNERS)
 
-    if spawnloc then
-        virus_b(spawnloc)
+    if target then
+        local spawnloc = nil
+
+        traverse_breadth_first(target, function (where, tile)
+            if tile.type == TILE_CAP then
+                spawnloc = where
+                return false
+            end
+            return true
+        end)
+
+        if spawnloc then
+            virus_b({ x = spawnloc.x, y = spawnloc.y, target = target })
+        end
     end
 end
 

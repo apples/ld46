@@ -146,27 +146,25 @@ function get_tile_type(x, y)
     if t then return t.type else return nil end
 end
 
+local go_S = { x = 0, y = -1, connecting = { TILE_NE, TILE_NW, TILE_CROSS, TILE_CAP } }
+local go_W = { x = -1, y = 0, connecting = { TILE_NE, TILE_SE, TILE_CROSS, TILE_CAP } }
+local go_E = { x = 1, y = 0, connecting = { TILE_NW, TILE_SW, TILE_CROSS, TILE_CAP } }
+local go_N = { x = 0, y = 1, connecting = { TILE_SE, TILE_SW, TILE_CROSS, TILE_CAP } }
+local go_SW = { go_W, go_S }
+local go_NW = { go_W, go_N }
+local go_SE = { go_E, go_S }
+local go_NE = { go_E, go_N }
+local go_NSEW = { go_W, go_E, go_S, go_N }
+
 function get_neighbors(tile, allow_caps)
     trace_push('get_neighbors')
     local results = {}
 
-    if tile.type == TILE_SW then
-        results[#results + 1] = { x = -1, y = 0 }
-        results[#results + 1] = { x = 0, y = -1 }
-    elseif tile.type == TILE_SE then
-        results[#results + 1] = { x = 1, y = 0 }
-        results[#results + 1] = { x = 0, y = -1 }
-    elseif tile.type == TILE_NW then
-        results[#results + 1] = { x = -1, y = 0 }
-        results[#results + 1] = { x = 0, y = 1 }
-    elseif tile.type == TILE_NE then
-        results[#results + 1] = { x = 1, y = 0 }
-        results[#results + 1] = { x = 0, y = 1 }
-    elseif tile.type == TILE_CROSS or allow_caps and tile.type == TILE_CAP then
-        results[#results + 1] = { x = -1, y = 0 }
-        results[#results + 1] = { x = 1, y = 0 }
-        results[#results + 1] = { x = 0, y = -1 }
-        results[#results + 1] = { x = 0, y = 1 }
+    if tile.type == TILE_SW then results = go_SW
+    elseif tile.type == TILE_SE then results = go_SE
+    elseif tile.type == TILE_NW then results = go_NW
+    elseif tile.type == TILE_NE then results = go_NE
+    elseif tile.type == TILE_CROSS or allow_caps and tile.type == TILE_CAP then results = go_NSEW
     end
 
     trace_pop('get_neighbors')
@@ -200,7 +198,19 @@ function traverse_breadth_first(start, cb)
             end
 
             for _,v in ipairs(get_neighbors(tile)) do
-                push(x + v.x, y + v.y, depth + 1)
+                local nx = x + v.x
+                local ny = y + v.y
+                local nt = get_tile_type(nx, ny)
+                local is_connected = false
+                for _,t in ipairs(v.connecting) do
+                    if t == nt then
+                        is_connected = true
+                        break
+                    end
+                end
+                if is_connected then
+                    push(nx, ny, depth + 1)
+                end
             end
         end
     end
@@ -220,7 +230,7 @@ function reset_game()
         board = {},
         health = 100,
         mitosis = 0,
-        mitosis_buildup = 0,
+        mitosis_buildup = 5,
         time = 0,
     }
 

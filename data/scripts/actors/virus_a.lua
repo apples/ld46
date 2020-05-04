@@ -7,10 +7,10 @@ local function verbose(s)
     print(s)
 end
 
-local bubble = {}
+local virus_a = {}
 
-function bubble.update(eid, dt)
-    verbose('bubble')
+function virus_a.update(eid, dt)
+    verbose('virus_a')
 
     local position = engine.entities:get_component(eid, component.position)
     local script = engine.entities:get_component(eid, component.script)
@@ -36,7 +36,7 @@ function bubble.update(eid, dt)
     verbose = function () end
 end
 
-function bubble.on_click(eid, pos, loc)
+function virus_a.on_click(eid, pos, loc)
 end
 
-return bubble
+return virus_a
