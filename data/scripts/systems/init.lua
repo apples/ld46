@@ -7,6 +7,7 @@ local animation = require('systems.animation')
 local pan = require('systems.pan')
 local hm = require('systems.health_manager')
 local dm = require('systems.difficulty_manager')
+local mm = require('systems.mitosis_manager')
 
 local systems = {}
 
@@ -24,6 +25,7 @@ function systems.visit(delta)
     run('pan', pan, delta)
     run('hm', hm, delta)
     run('dm', dm, delta)
+    run('mm', mm, delta)
 end
 
 return systems

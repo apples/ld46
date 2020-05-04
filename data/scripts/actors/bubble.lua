@@ -26,6 +26,7 @@ function bubble.update(eid, dt)
     heart_targeter(position, state, function ()
         verbose('on heart, healing')
         game_state.health = game_state.health + 1
+        game_state.mitosis_buildup = game_state.mitosis_buildup + 1/32
         verbose('my purpose has been fulfilled')
         engine.entities:destroy_entity(eid)
     end)

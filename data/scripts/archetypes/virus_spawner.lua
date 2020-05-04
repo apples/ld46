@@ -19,12 +19,12 @@ return function(init)
         },
         current = {
             t = 0,
-            duration = 1,
+            duration = 10,
             virus = nil,
             difficulty = 0,
             curve = { 0 },
         },
-        difficulty = { 0, 1, 1 },
+        difficulty = { 1, 1, 2 },
         flipflop = 1,
     }
 

@@ -67,19 +67,23 @@ function goto_lose()
     gui_state.lose = true
 end
 
+function buy(spawn, cost)
+    if game_state.mitosis < cost then return false end
+    game_state.mitosis = game_state.mitosis - cost
+    spawn()
+    return true
+end
+
 function buy_blue()
-    cell_blue()
-    game_state.health = game_state.health - 1
+    buy(cell_blue, 1)
 end
 
 function buy_green()
-    cell_green()
-    game_state.health = game_state.health - 5
+    buy(cell_green, 5)
 end
 
 function buy_white()
-    cell_white()
-    game_state.health = game_state.health - 1
+    buy(cell_white, 5)
 end
 
 function set_tile(x, y, t)
@@ -215,6 +219,8 @@ function reset_game()
         board_version = 1,
         board = {},
         health = 100,
+        mitosis = 0,
+        mitosis_buildup = 0,
         time = 0,
     }
 
