@@ -132,13 +132,16 @@ function virus_c.update(eid, dt)
                         elseif my_roll == their_roll then
                             verbose('draw')
                             state.rps_timer = 1
-                        else
-                            verbose('i lose')
                             unsub_death()
                             verbose('destroying self')
                             engine.entities:destroy_entity(eid)
                             verbose('destroying white')
                             engine.entities:destroy_entity(state.target)
+                        else
+                            verbose('i lose')
+                            unsub_death()
+                            verbose('destroying self')
+                            engine.entities:destroy_entity(eid)
                             return
                         end
                     end
