@@ -29,19 +29,19 @@ function cell_blue.update(eid, dt)
         verbose('  find_new_target()')
         state.path = nil
 
-        local best_score = nil
-        local potential_targets = {}
+        local picker = es_jump_sampler.new(1)
 
         traverse_breadth_first(moving_to, function (where, tile)
             if tile.type == TILE_CAP then
-                potential_targets[#potential_targets + 1] = where
+                picker:add(where, 1/where.depth)
             end
             return true
         end)
 
-        if #potential_targets > 0 then
-            local roll = math.random(#potential_targets)
-            state.target = potential_targets[roll]
+        local results = picker:get_results()
+
+        if #results > 0 then
+            state.target = results[1]
             verbose('  target found (x = ' .. state.target.x .. ', y = ' .. state.target.y .. ')')
         end
     end
