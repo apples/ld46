@@ -2,11 +2,13 @@
 
 #include "physics.hpp"
 #include "velocity_system.hpp"
+#include "es_jump_sampler.hpp"
 
 void engine::register_engine_module() {
     auto global_table = sol::table(lua.globals());
 
     scripting::register_type<ember_database>(global_table);
+    es_jump_sampler::register_type(global_table);
 
     auto engine_table = lua.create_table();
 

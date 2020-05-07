@@ -62,6 +62,8 @@ engine::engine(SDL_Window* g_window, SDL_GLContext glcontext) : g_window(g_windo
 
     lua["pathfind_fast"] = pathfind;
 
+    std::srand(std::random_device{}());
+
     display_width = config["display"]["width"];
     display_height = config["display"]["height"];
     aspect_ratio = float(display_width) / float(display_height);
