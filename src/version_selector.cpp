@@ -1,6 +1,7 @@
 #include "version_selector.hpp"
 
 #include "emberjs/config.hpp"
+#include "emberjs/highscore.hpp"
 
 #define TRACE(N)
 
@@ -25,6 +26,9 @@ version_selector::version_selector(
 
     lua["package"]["path"] = "data/scripts/?.lua;data/scripts/?/init.lua";
     lua["package"]["cpath"] = "";
+
+    lua["set_highscore"] = emberjs::ember_set_highscore;
+    lua["get_highscore"] = emberjs::ember_get_highscore;
 
     lua_gui::register_types(lua.globals());
 
@@ -156,7 +160,6 @@ auto version_selector::handle_gui_input(SDL_Event& e) -> bool {
 }
 
 void version_selector::tick() {
-
     auto now = clock::now();
     auto delta_time = now - prev_time;
     prev_time = now;
@@ -166,6 +169,9 @@ void version_selector::tick() {
     {
         if (handle_gui_input(event)) break;
     }
+
+    glClearColor(0,0,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     TRACE("GUI UPDATE") {
         auto result = update_gui_state(gui_state);

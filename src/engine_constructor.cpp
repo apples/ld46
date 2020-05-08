@@ -3,6 +3,7 @@
 #include "pathfind.hpp"
 
 #include "emberjs/config.hpp"
+#include "emberjs/highscore.hpp"
 
 using namespace std::literals;
 
@@ -61,6 +62,9 @@ engine::engine(SDL_Window* g_window, SDL_GLContext glcontext) : g_window(g_windo
     lua["trace_pop"] = +[](const std::string& name){ tracing::pop(name); };
 
     lua["pathfind_fast"] = pathfind;
+
+    lua["set_highscore"] = emberjs::ember_set_highscore;
+    lua["get_highscore"] = emberjs::ember_get_highscore;
 
     std::srand(std::random_device{}());
 

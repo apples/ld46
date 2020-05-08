@@ -65,6 +65,16 @@ function goto_lose()
         engine.entities:destroy_entity(eid)
     end)
     gui_state.lose = true
+
+    local score = math.floor(game_state.time * 1000)
+    local highscore = get_highscore()
+
+    if score > highscore then
+        set_highscore(score)
+        gui_state.highscore = score
+    end
+
+    gui_state.score = score
 end
 
 function buy(spawn, cost)
@@ -245,6 +255,7 @@ function reset_game()
         debug_strings = {},
         debug_vals = {},
         game_state = game_state,
+        highscore = get_highscore(),
     }
 
     heart()
