@@ -11,7 +11,7 @@ return function(props)
             top=0,
             left = 50,
             height = 8,
-            color = '#08f',
+            color = '#75A1EC',
             text = 'Mitosis: ' .. context.game_state.mitosis,
         }
     )
