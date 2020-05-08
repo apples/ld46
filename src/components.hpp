@@ -42,6 +42,8 @@ TAG(tag_block);
 TAG(tag_cell);
 TAG(tag_cell_white);
 TAG(tag_virus);
+TAG(tag_virus_a);
+TAG(tag_virus_b);
 TAG(tag_virus_c);
 
 struct net_id {

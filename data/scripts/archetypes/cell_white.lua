@@ -19,7 +19,9 @@ return function(init)
 
     local script = component.script.new()
     script.name = 'cell_white'
-    script.state = {}
+    script.state = {
+        health = 5
+    }
 
     engine.entities:add_component(ent, component.tag_cell.new())
     engine.entities:add_component(ent, component.tag_cell_white.new())

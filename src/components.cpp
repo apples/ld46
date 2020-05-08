@@ -21,6 +21,8 @@ void register_all_components(sol::table& table) {
     register_type<tag_cell>(table);
     register_type<tag_cell_white>(table);
     register_type<tag_virus>(table);
+    register_type<tag_virus_a>(table);
+    register_type<tag_virus_b>(table);
     register_type<tag_virus_c>(table);
     register_type<net_id>(table);
     register_type<position>(table);

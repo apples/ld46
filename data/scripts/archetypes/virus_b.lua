@@ -25,6 +25,7 @@ return function(init)
     }
 
     engine.entities:add_component(ent, component.tag_virus.new())
+    engine.entities:add_component(ent, component.tag_virus_b.new())
     engine.entities:add_component(ent, position)
     engine.entities:add_component(ent, sprite)
     engine.entities:add_component(ent, script)

@@ -92,9 +92,18 @@ function cell_white.update(eid, dt)
             math.abs(target_pos.pos.y - position.pos.y) < 0.5 then
                 move = false
                 if not engine.entities:has_component(state.target, component.tag_virus_c) then
+                    if engine.entities:has_component(state.target, component.tag_virus_a) then
+                        state.health = state.health - 1
+                    elseif engine.entities:has_component(state.target, component.tag_virus_b) then
+                        state.health = state.health - 5
+                    end
+
                     engine.entities:destroy_entity(state.target)
-                    engine.entities:destroy_entity(eid)
-                    return
+
+                    if state.health <= 0 then
+                        engine.entities:destroy_entity(eid)
+                        return
+                    end
                 end
         end
 
