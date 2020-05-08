@@ -7,14 +7,6 @@
 #include <random>
 #include <vector>
 
-class rand_prng_wrapper {
-public:
-    using result_type = int;
-    result_type operator()() { return std::rand(); }
-    static constexpr result_type min() { return 0; }
-    static constexpr result_type max() { return RAND_MAX; }
-};
-
 /// implements Algorithm A-ExpJ from Efraimidis-Spirakis
 class es_jump_sampler {
 public:

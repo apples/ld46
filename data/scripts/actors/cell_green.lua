@@ -34,16 +34,11 @@ function cell_green.update(eid, dt)
         local E_connected = (E == TILE_NW or E == TILE_SW or E == TILE_CROSS)
         local W_connected = (W == TILE_NE or W == TILE_SE or W == TILE_CROSS)
 
-        local N_good = N_connected or N == TILE_CAP
-        local S_good = S_connected or S == TILE_CAP
-        local E_good = E_connected or E == TILE_CAP
-        local W_good = W_connected or W == TILE_CAP
-
         local blocked =
-            tile.type == TILE_NE and (not N_good or S_connected or not E_good or W_connected) or
-            tile.type == TILE_SE and (N_connected or not S_good or not E_good or W_connected) or
-            tile.type == TILE_NW and (not N_good or S_connected or E_connected or not W_good) or
-            tile.type == TILE_SW and (N_connected or not S_good or E_connected or not W_good)
+            tile.type == TILE_NE and (S_connected or W_connected) or
+            tile.type == TILE_SE and (N_connected or W_connected) or
+            tile.type == TILE_NW and (S_connected or E_connected) or
+            tile.type == TILE_SW and (N_connected or E_connected)
 
         return blocked
     end
@@ -58,41 +53,22 @@ function cell_green.update(eid, dt)
         verbose('  find_new_target()')
         state.path = nil
 
-        local best_score = nil
-        local potential_targets = {}
-
-        local okay_score = 0
-        local okay_targets = {}
+        local picker = es_jump_sampler.new(1)
 
         traverse_breadth_first(moving_to, function (where, tile)
             local score = math.abs(where.x - tile_x) + math.abs(where.y - tile_y)
             if is_good_target(where, tile) then
-                if best_score == nil or score < best_score then
-                    best_score = score
-                    potential_targets = { where }
-                elseif score == best_score then
-                    potential_targets[#potential_targets + 1] = where
-                end
+                picker:add(where, 10 / score)
             elseif is_okay_target(where, tile) then
-                if score > 2 * okay_score then
-                    okay_score = score
-                    okay_targets = { where }
-                elseif score - okay_score < 3 then
-                    okay_targets[#okay_targets + 1] = where
-                end
+                picker:add(where, 1 / score)
             end
             return true
         end)
 
-        local maxroll = #potential_targets * 3 + #okay_targets
+        local results = picker:get_results()
 
-        if maxroll > 0 then
-            local roll = math.random(maxroll)
-            if roll <= #potential_targets * 3 then
-                state.target = potential_targets[math.floor((roll - 1) / 3) + 1]
-            else
-                state.target = okay_targets[roll - #potential_targets * 3]
-            end
+        if #results > 0 then
+            state.target = results[1]
             verbose('  target found (x = ' .. state.target.x .. ', y = ' .. state.target.y .. ')')
         end
     end
