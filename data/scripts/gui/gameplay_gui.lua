@@ -6,6 +6,7 @@ local debug_display = require('gui.debug_display')
 local shop = require('gui.shop')
 local health_counter = require('gui.health_counter')
 local mitosis_counter = require('gui.mitosis_counter')
+local time_counter = require('gui.time_counter')
 local lose = require('gui.lose')
 local threats = require('gui.threats')
 
@@ -21,6 +22,7 @@ return function(props)
                 vdom.create_element(threats, {}),
                 vdom.create_element(health_counter, {}),
                 vdom.create_element(mitosis_counter, {}),
+                vdom.create_element(time_counter, {}),
                 vdom.create_element(fps_counter, {}),
                 vdom.create_element(debug_display, {})
             )
