@@ -129,7 +129,7 @@ function cell_white.update(eid, dt)
 
     verbose('done.')
 
-    --verbose = function () end
+    verbose = function () end
 end
 
 function cell_white.on_click(eid, pos, loc)

@@ -7,7 +7,7 @@ return function(props)
 
     return vdom.create_element('widget', { width = '100%', height = '100%' },
         vdom.create_element('panel', {
-            texture='shop_pane_blue',
+            texture='shop_pane_blue_priced',
             width=32,
             height=32,
             left=0,
@@ -15,7 +15,7 @@ return function(props)
             on_click=buy_blue,
         }),
         vdom.create_element('panel', {
-            texture='shop_pane_green',
+            texture='shop_pane_green_priced',
             width=32,
             height=32,
             left=32,
@@ -23,7 +23,7 @@ return function(props)
             on_click=buy_green,
         }),
         vdom.create_element('panel', {
-            texture='shop_pane_white',
+            texture='shop_pane_white_priced',
             width=32,
             height=32,
             left=64,
